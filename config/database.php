@@ -12,6 +12,7 @@ return [
     |
     */
 
+    'driver' => 'mysql',
     'host' => 'localhost',
     //'port' => '3306',
 
@@ -39,7 +40,7 @@ return [
     |
     */
 
-    //'charset' => 'utf8mb4',
+    'charset' => 'utf8mb4',
     //'collation' => 'utf8mb4_unicode_ci',
 
 ];
