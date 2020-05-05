@@ -1,6 +1,6 @@
 <?php
 
-class User
+class User extends Model
 {
     /*
     |------------------------------------------------
@@ -8,19 +8,6 @@ class User
     |------------------------------------------------
     */
 
-    private $username;
-    private $password;
-    private $email;
-
-    private $isadmin;
-    private $isactive;
-
-    private $anrede;
-    private $vorname;
-    private $nachname;
-    private $adresse;
-    private $ort;
-    private $plz;
 
     /*
     |------------------------------------------------
@@ -28,9 +15,10 @@ class User
     |------------------------------------------------
     */
 
-    function __construct()
+    function __construct($username)
     {
         //ctor
+        $this->AutoFillByKeyValue('webuser','username',$username);
     }
 
     function __destruct()
