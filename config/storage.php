@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'default' => 'ugc',
+    'default' => 'assets',
 
     /*
     |------------------------------------------------
@@ -23,7 +23,15 @@ return [
     'paths' => [
 
         'ugc' => [
-            'root' => 'public/ugc/',
+            'root' => 'ugc/',
+            'visibility' => 'public',
+        ],
+        'assets' => [
+            'root' => 'assets/',
+            'visibility' => 'public',
+        ],
+        'img' => [
+            'root' => 'assets/img/',
             'visibility' => 'public',
         ],
 
