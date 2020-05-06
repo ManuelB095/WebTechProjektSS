@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'name' => 'Holwegram'),
+    'name' => 'Holwegram',
 
     /*
     |------------------------------------------------
@@ -20,7 +20,7 @@ return [
     |------------------------------------------------
     |
     | Set this to false before deploying.
-    | Increased overall verbosity and assertions.
+    | Increased overall verbosity.
     |
     */
 
