@@ -2,177 +2,159 @@
 //"use strict" applies important security measures,
 //but also forces us to comply with declaration and such. -LG
 
-//This file currently declares and defines all classes
-//it uses. Maybe we can split it up reasonably? Low priority. -LG
-
 /*
 |------------------------------------------------
-| BasicModal
+| Dialog Factory
 |------------------------------------------------
 |
 | Since everything shall happen via AJAX (ugh),
 | we may as well work with proper "windows".
 |
+| Luckily, JQuery UI has the perfect solution:
+| Dialogs are draggable, resizable iframes.
+| They have ARIA and keyboard controls built-in.
+| The dialog content is entirely customisable.
+|
 */
 
-class BasicModal
-{
-    static _OpenModals = [];
+var dialogFactory = {
+    imageDetails: function()
+    {
+        var dialog = $('<div>');
+        dialog.prop('title','Image Name Here');
 
-    constructor(root)
+        var image = $('<img>');
+        image.addClass('dialog-image');
+        image.prop('src','ugc/full/4321/johanna-pferd.jpg');
+        dialog.append(image);
+
+        var prevBtn = $('<a>');
+        prevBtn.addClass("dialog-prev");
+        prevBtn.html('❮');
+        prevBtn.on("click", prevSlide);
+        dialog.append(prevBtn);
+
+        var nextBtn = $('<a>');
+        nextBtn.addClass("dialog-next");
+        nextBtn.html('❯');
+        nextBtn.on("click", nextSlide);
+        dialog.append(nextBtn);
+        
+        dialog.dialog();
+    },
+};
+
+
+/*
+|------------------------------------------------
+| Draggable Tags
+|------------------------------------------------
+*/
+
+class SidebarTag
+{ 
+    static _LoadedTags = [];
+
+    constructor(value, root)
     {
         //register this
-        BasicModal._OpenModals.push(this);
+        SidebarTag._LoadedTags.push(this);
 
-        //create DOM
-        this.bg = $('<div>');
-        this.bg.addClass("modal-bg");
+        this._value = value;
 
-        //Exit Button
-        this.closeBtn = $('<span>');
-        this.closeBtn.addClass("modal-close");
-        this.closeBtn.html('&times;');
-        this.closeBtn.on("click", this.Close.bind(this) );
-        this.bg.append(this.closeBtn);
+        this.div = $("<div>");
+        this.div.addClass("sidebar-tag");
 
-        //Populated by child classes
-        this.contentDiv = $('<div>');
-        this.contentDiv.addClass("modal-content");
-        this.bg.append(this.contentDiv);
+        this.check = $("<input>");
+        this.check.prop("type", "checkbox");
+        this.check.on("click", function(e)
+        {
+            //TODO updateFilter(tagname);
+        });
+        this.div.append( this.check );
+
+        this.draggable = $("<span>");
+        this.draggable.addClass("sidebar-tag-draggable");
+        this.draggable.draggable({
+            revert: "invalid",
+            helper: "clone"
+        });
+        this.draggable.html( this._value );
+        this.div.append( this.draggable );
 
         if( root != null )
         {
-            root.append(this.bg);
+            root.append(this.div);
         }
     }
+}
 
-    Close()
+
+
+/*
+|------------------------------------------------
+| Draggable Products
+|------------------------------------------------
+*/
+
+class GalleryItem
+{ 
+    static _LoadedItems = [];
+
+    constructor(productid, root)
     {
-        //destroy DOM
-        this.bg.remove();
-        //Note that .remove() simply detaches the element from DOM, JS built-in garbage collector does the rest. (or at least I think so -LG)
+        //register this
+        GalleryItem._LoadedItems.push(this);
 
-        //unregister this
-        for(var i = 0; i < BasicModal._OpenModals.length; ++i)
-        {
-            if( BasicModal._OpenModals[i] == this )
-            {
-                BasicModal._OpenModals.splice(0, i);
-                delete this;
-                return true;
+        this._productid = productid; //.toString()
+
+        this.div = $("<div>");
+        this.div.addClass("gallery-item");
+        this.div.droppable({
+            accept: ".sidebar-tag-draggable",
+            drop: function( event, ui ) {
+                alert("GalleryItem.img received some kind of thing!");
             }
+        });
+
+        this.img = $("<img>");
+        this.img.prop("src", "ugc/thumb/"+ this._productid +".jpg");
+        this.img.on("click", function(e)
+        {
+            dialogFactory.imageDetails();
+            //TODO updateFilter(tagname);
+            //If owned or bought, show new Modal() with the full size version
+        });
+        this.img.draggable({
+            revert: true
+        });
+        this.div.append( this.img );
+
+        this.check = $("<input>");
+        this.check.attr("type", "checkbox");
+        this.div.append( this.check );
+
+        //TODO badges for owned/bought/geodata
+        //TODO draggable
+
+        if( root != null )
+        {
+            root.append(this.div);
         }
     }
 
-    static CloseAll()
+    static RemoveAll()
     {
-        for(var i = BasicModal._OpenModals.length; i >= 0; --i)
+        for(var i = GalleryItem._LoadedItems.length; i >= 0; --i)
         {
             //destroy DOM
-            BasicModal._OpenModals[i].bg.remove()
+            GalleryItem._LoadedItems[i].div.remove()
             //unregister this
-            delete BasicModal._OpenModals[i];
+            delete GalleryItem._LoadedItems[i];
         }
-    }
-
-    /*get var0()
-    {
-        return this._var0;
-    }
-    set var0(value)
-    {
-        this._var0 = value;
-    }*/
-}
-
-/*
-|------------------------------------------------
-| RegisterModal
-|------------------------------------------------
-*/
-
-class RegisterModal extends BasicModal
-{
-    constructor(root)
-    {
-        super(root); //invoke parent constructor
-
-        //this.element.style.cursor = 'pointer';
+        GalleryItem._LoadedItems = [];
     }
 }
-
-/*
-|------------------------------------------------
-| My Garbage Heap -LG
-|------------------------------------------------
-|
-| I swear I will clean this up in a few days.
-| (Whereas 'few' is a malleable term.)
-|
-*/
-
-/* stuff from my original ue4 modal
-
-//Big Picture
-var slideDiv = $('<div/>');
-slideDiv.append('<div id="lightboxnum" class="numbertext"/>');
-slideDiv.append('<img id="lightboximg" class="modal-bigimg">');
-contentDiv.append(slideDiv);
-
-//Slideshow Buttons
-var prevBtn = $('<a/>');
-prevBtn.addClass("modal-prev");
-prevBtn.html('❮');
-prevBtn.on("click", prevSlide);
-contentDiv.append(prevBtn);
-
-var nextBtn = $('<a/>');
-nextBtn.addClass("modal-next");
-nextBtn.html('❯');
-nextBtn.on("click", nextSlide);
-contentDiv.append(nextBtn);
-
-//Caption
-contentDiv.append('<div class="caption-container"><p id="caption"/></div>');
-
-
-sketches for some more classes
-
-sidebar_tag: 
-    var div = $("<div>");
-
-    //TODO var draggable = $("<div>");
-    // div.append(draggable);
-
-    var check = $("<input>");
-    check.attr("type", "checkbox");
-    check.on("click", function(e)
-    {
-        //TODO updateFilter(tagname);
-    });
-    div.append(check);
-
-
-gallery_item:
-    var div = $("<div>");
-
-    var img = $("<img>");
-    img.attr("src", "ugc/12345.jpg");
-    img.on("click", function(e)
-    {
-        //TODO updateFilter(tagname);
-    });
-    div.append(img);
-
-    var check = $("<input>");
-    check.attr("type", "checkbox");
-    div.append(check);
-
-    //TODO badges for owned/bought/geodata
-    //TODO draggable
-
-*/
-
 
 
 /*
@@ -190,14 +172,15 @@ jQuery(document).ready(function($)
         $("#check_filter_owned").prop('checked', true);
         $("#check_filter_bought").prop('checked', true);
         $("#check_filter_buyable").prop('checked', true);
-        //TODO update
+        //TODO update #gallery_list
     });
 
-    /* enable this to test the modal
-    $("#btn_delete").on("click", function(e)
-    {
-        new BasicModal( $('body') )
-    });
-    */
+    /* dummies for UI tests */
+    new SidebarTag( "Österreich", $('#taglist') );
+    new SidebarTag( "Wien", $('#taglist') );
+    new GalleryItem( "1234", $('#gallery_list') );
+    new GalleryItem( "1234", $('#gallery_list') );
+    new GalleryItem( "4321", $('#gallery_list') );
+    new GalleryItem( "1234", $('#gallery_list') );
 
 });

@@ -1,0 +1,36 @@
+
+/* Debug yey *
+* {
+    border: 1px gray solid;
+}
+*/
+
+.gallery-root {
+    display: grid;
+    grid-template-columns: auto min-content;
+}
+
+.sidebar-tag-draggable {
+    cursor: pointer;
+}
+
+.gallery-list {
+    display: grid;
+    grid-template-columns: min-content min-content min-content; /*TODO consider adding Media queries (or better yet, somehow check this things width) to adapt this as needed*/
+    grid-gap: 1em;
+}
+
+.gallery-item {
+
+}
+
+.gallery-item img {
+    cursor: pointer;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.dialog-image {
+    max-height: 100%;
+    max-width: 100%;
+}

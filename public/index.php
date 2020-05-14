@@ -11,8 +11,11 @@ require_once('../init.php');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" type=text/css href="js/jquery-ui-1.12.1/jquery-ui.min.css" />
 
     <link rel="stylesheet" type=text/css href="assets/BasicModal.css" />
+    <link rel="stylesheet" type=text/css href="assets/CustomShop.css" />
     <link rel="shortcut icon" href="assets/fhtw-16x16.ico" >
 </head>
 <body>
