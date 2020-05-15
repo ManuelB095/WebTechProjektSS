@@ -32,9 +32,9 @@
 </div>
 
 <div id="dialog_productdetails" title="Bild-Details">
-    <img class="dialog-image">
-    <button id="productdetails-prev" class="dialog-prev ui-icon ui-icon-caret-1-w">
-    <button id="productdetails-next" class="dialog-next ui-icon ui-icon-caret-1-e">
+    <img id="productdetails_img" class="dialog-image">
+    <button id="productdetails_prev" class="dialog-prev ui-icon ui-icon-caret-1-w">
+    <button id="productdetails_next" class="dialog-next ui-icon ui-icon-caret-1-e">
     <div id="productdetails_taglist">
         <!-- populated by JS -->
     </div>

@@ -48,14 +48,19 @@ class SidebarTag
         }
     }
 
-    getvalue()
+    get value()
     {
         return this._value;
     }
 
+    get id()
+    {
+        return this._tagid;
+    }
+
     static GetObjectByID(tagid)
     {
-        for(var i = SidebarTag._LoadedTags.length; i >= 0; --i)
+        for(var i = SidebarTag._LoadedTags.length -1; i >= 0; --i)
         {
             if( SidebarTag._LoadedTags[i].id == tagid )
             {
@@ -97,7 +102,7 @@ class GalleryItem
         this.div.on("click", function(e)
         {
             //TODO this should not fire when clicking the checkbox
-            //dialogFactory.imageDetails(this._productid);
+            setProductDetailsByID(productid);
             $('#dialog_productdetails').dialog('open');
         });
 
@@ -146,9 +151,25 @@ class GalleryItem
         }
     }
 
+    get id()
+    {
+        return this._productid;
+    }
+
+    static GetObjectByID(productid)
+    {
+        for(var i = GalleryItem._LoadedItems.length -1; i >= 0; --i)
+        {
+            if( GalleryItem._LoadedItems[i].id == productid )
+            {
+                return GalleryItem._LoadedItems[i];
+            }
+        }
+    }
+
     static RemoveAll()
     {
-        for(var i = GalleryItem._LoadedItems.length; i >= 0; --i)
+        for(var i = GalleryItem._LoadedItems.length -1; i >= 0; --i)
         {
             //destroy DOM
             GalleryItem._LoadedItems[i].div.remove()
@@ -156,6 +177,30 @@ class GalleryItem
             delete GalleryItem._LoadedItems[i];
         }
         GalleryItem._LoadedItems = [];
+    }
+
+    static GetNextObject(productid)
+    {
+        for(var i = GalleryItem._LoadedItems.length -2; i >= 0; --i)
+        {
+            if( GalleryItem._LoadedItems[i].id == productid )
+            {
+                return GalleryItem._LoadedItems[++i];
+            }
+        }
+        return GalleryItem._LoadedItems[0];
+    }
+
+    static GetPrevObject(productid)
+    {
+        for(var i = GalleryItem._LoadedItems.length - 1; i >= 1; --i)
+        {
+            if( GalleryItem._LoadedItems[i].id == productid )
+            {
+                return GalleryItem._LoadedItems[--i];
+            }
+        }
+        return GalleryItem._LoadedItems[ GalleryItem._LoadedItems.length ];
     }
 }
 
@@ -188,6 +233,20 @@ function addProductToCart(productid)
     $('#shopcart_list').append(cartitem);
 }
 
+function setProductDetailsByID(productid)
+{
+    setProductDetailsByObject(GalleryItem.GetObjectByID(productid));
+}
+
+function setProductDetailsByObject(galleryitem)
+{
+    alert("NEW DETAILS " + galleryitem.id);
+    $('#dialog_productdetails').attr('productid', galleryitem.id);
+    $('#productdetails_img').prop('src','ugc/full/'+ galleryitem.id +'/johanna-pferd.jpg') //TODO fetch real image name from server
+    //TODO clear and repopulate $('#productdetails_taglist')
+    $('#productdetails_geodata').html('(171,64/92,08)'); //TODO use actual data
+}
+
 
 /*
 |------------------------------------------------
@@ -218,6 +277,16 @@ jQuery(document).ready(function($)
     $('#dialog_productdetails').dialog({
         autoOpen: false,
         //modal: true,
+    });
+
+
+    $('#productdetails_prev').on('click', function(e)
+    {
+        setProductDetailsByObject(GalleryItem.GetPrevObject($('#dialog_productdetails').attr('productid')));
+    });
+    $('#productdetails_next').on('click', function(e)
+    {
+        setProductDetailsByObject(GalleryItem.GetNextObject($('#dialog_productdetails').attr('productid')));
     });
 
 
