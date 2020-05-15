@@ -25,6 +25,16 @@ class DB
         {
             $connection_string .= ';charset='. Config('database','charset');
         }
-        $this->pdo = new PDO($connection_string, Config('database','username'), Config('database','password'));
+        $test = "mysql:host=localhost;dbname=webtech;charset=utf8mb4";
+        // $connection_string(currently)equals to  mysql:host='localhost';dbname='webtech';charset='utf8mb4'
+        try {
+            $this->pdo = new PDO($connection_string, Config('database','username'), Config('database','password'));
+        }
+        catch(PDOException $e)
+        {
+            print "ERROR: " . $e->getMessage();
+            print $connection_string;
+        }
+        $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     }
 }

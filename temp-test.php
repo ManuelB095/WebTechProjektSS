@@ -17,13 +17,18 @@ spl_autoload_register(function ($class) {
     }
 });
 
+ $user = new User('asdf');
+//  echo $user->ex_username;
+//  $user->ex_firstname = 'Emil';
+//  echo $user->ex_firstname;
+ //$user->ex_username = 'username';
 
-$user = new User('asdf');
-echo $user->vorname;
-$user->vorname = 'Emil';
-echo $user->vorname;
-$user->username = 'username';
+ $user->createUser();
 
-foreach(ini_get_all() as $key=>$value) { echo $key, ' => ', $value['local_value'], '<br>'; }
+ //$user->setUser('Benjamin', 'Blümchen', 'töröö');
+ //echo $user->ex_firstname;
 
-echo empty(ini_get('display_errors'));
+ print "<br><br>";
+ foreach(ini_get_all() as $key=>$value) { echo $key, ' => ', $value['local_value'], '<br>'; }
+
+ echo empty(ini_get('display_errors'));
