@@ -49,4 +49,6 @@
     <p>Lieferadresse:<br><?php echo 'Mustergasse 14'; ?><br><?php echo '1010'; ?> <?php echo 'Wien'; //TODO use actual data ?></p>
 </div>
 
+<script src="js/model/product.js"></script>
+<script src="js/model/tag.js"></script>
 <script src="js/gallery_shop.js"></script>

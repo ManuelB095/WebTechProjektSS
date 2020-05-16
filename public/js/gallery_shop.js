@@ -9,67 +9,101 @@
 |------------------------------------------------
 */
 
-class SidebarTag
+class SidebarTagView
 { 
-    static _LoadedTags = [];
+    static _all = [];
 
-    constructor(tagid, value, root)
+    constructor(model)
     {
         //register this
-        SidebarTag._LoadedTags.push(this);
+        SidebarTagView._all.push(this);
 
-        this._tagid = tagid;
-        this._value = value;
+        this._model = model;
 
         this.div = $("<div>");
         this.div.addClass("sidebar-tag");
 
         this.check = $("<input>");
         this.check.prop("type", "checkbox");
-        this.check.on("click", function(e)
-        {
-            //TODO updateFilter(tagname);
-        });
+        this.check.on("click", this.onclick_check.bind(this));
         this.div.append( this.check );
 
         this.draggable = $("<span>");
         this.draggable.addClass("sidebar-tag-draggable");
-        this.draggable.prop('tagid',this._tagid);
+        this.draggable.attr('tagid',this._model.value); //TODO can this be fancier? -LG
         this.draggable.draggable({
             revert: "invalid",
             helper: "clone"
         });
-        this.draggable.html( this._value );
+        this.draggable.html( this._model.value );
         this.div.append( this.draggable );
 
-        if( root != null )
+        $('#taglist').append(this.div);
+    }
+
+    onclick_check(e)
+    {
+        //TODO updateFilter(tagname);
+    }
+
+    static removeAll()
+    {
+        for(var i = this._all.length -1; i >= 0; --i)
         {
-            root.append(this.div);
+            //destroy DOM
+            this._all[i].div.remove()
+            //unregister this
+            delete this._all[i];
         }
+        this._all = [];
     }
 
-    get value()
-    {
-        return this._value;
-    }
-
-    get id()
-    {
-        return this._tagid;
-    }
-
-    static GetObjectByID(tagid)
-    {
-        for(var i = SidebarTag._LoadedTags.length -1; i >= 0; --i)
-        {
-            if( SidebarTag._LoadedTags[i].id == tagid )
-            {
-                return SidebarTag._LoadedTags[i];
-            }
-        }
-    }
 }
 
+
+/*
+|------------------------------------------------
+| Details Tags
+|------------------------------------------------
+*/
+
+class DetailsTagView
+{ 
+    static _all = [];
+
+    constructor(model)
+    {
+        //register this
+        DetailsTagView._all.push(this);
+
+        this._model = model;
+
+        this.div = $('<div>');
+        this.div.prop('tagid',this._tagid);
+        this.div.html( this._model.value );
+        this.div.on('click', this.onclick_div.bind(this));
+
+        $('#productdetails_taglist').append(this.div);
+    }
+
+    onclick_div(e)
+    {
+        //TODO ask for confirmation somehow? Then tell models to disassociate from one another and remove this html
+    }
+
+    static removeAll()
+    {
+        for(var i = this._all.length -1; i >= 0; --i)
+        {
+            //destroy DOM
+            this._all[i].div.remove()
+            //unregister this
+            delete this._all[i];
+        }
+        this._all = [];
+    }
+
+}
 
 
 /*
@@ -78,47 +112,41 @@ class SidebarTag
 |------------------------------------------------
 */
 
-class GalleryItem
+class GalleryProductView
 { 
-    static _LoadedItems = [];
+    static _all = [];
 
-    constructor(productid, ownership, geodata, root)
+    constructor(model)
     {
         //register this
-        GalleryItem._LoadedItems.push(this);
+        GalleryProductView._all.push(this);
 
-        this._productid = productid; //.toString()
+        this._model = model;
 
         this.div = $("<div>");
         this.div.addClass("gallery-item");
         this.div.droppable({
             accept: ".sidebar-tag-draggable",
             drop: function( event, ui ) {
-                //alert("GalleryItem.img received "+ ui.draggable);
-                //alert(ui.draggable.prop('tagid'));
+                //alert(ui.draggable.attr('tagid'));
                 //TODO tell server to tag this product
             }
         });
-        this.div.on("click", function(e)
-        {
-            //TODO this should not fire when clicking the checkbox
-            setProductDetailsByID(productid);
-            $('#dialog_productdetails').dialog('open');
-        });
+        this.div.on('click', this.onclick_div.bind(this));
 
         this.img = $("<img>");
-        this.img.prop("src", "ugc/thumb/"+ this._productid +".jpg");
+        this.img.prop('src', 'ugc/thumb/'+ this._model.id +'.jpg');
         this.img.draggable({
             revert: true
         });
         this.div.append( this.img );
 
-        if( ownership > 0 )
+        if( this._model.access > 0 )
         {
             this.ownerbadge = $('<span>');
             this.ownerbadge.addClass('ui-icon');
             this.ownerbadge.addClass('ui-icon-person');
-            if( ownership == 1 )
+            if( this._model.access == 1 )
             {
                 this.ownerbadge.addClass('badge-bg-yellow');
                 this.ownerbadge.prop('title','erworben');
@@ -131,7 +159,7 @@ class GalleryItem
             this.div.append( this.ownerbadge );
         }
 
-        if( geodata )
+        if( this._model.geodata )
         {
             this.geobadge = $('<span>');
             this.geobadge.addClass('ui-icon');
@@ -145,106 +173,114 @@ class GalleryItem
         this.check.prop("type", "checkbox");
         this.div.append( this.check );
 
-        if( root != null )
-        {
-            root.append(this.div);
-        }
+        $('#gallery_list').append(this.div);
     }
 
-    get id()
+    setProductDetailsToThis()
     {
-        return this._productid;
+        $('#dialog_productdetails').attr('productid', this._model.id);
+        $('#productdetails_img').prop('src','ugc/full/'+ this._model.id +'/johanna-pferd.jpg') //TODO fetch real image name from server
+        DetailsTagView.removeAll();
+        //TODO foreach model.tags do new DetailsTagView(tag)
+        $('#productdetails_geodata').html('(171,64/92,08)'); //TODO use actual data
     }
 
-    static GetObjectByID(productid)
+    onclick_div(e)
     {
-        for(var i = GalleryItem._LoadedItems.length -1; i >= 0; --i)
+        //TODO this should not fire when clicking the checkbox
+        //TODO should this only work if the current user has download permissions for the item? -LG
+        this.setProductDetailsToThis();
+        $('#dialog_productdetails').dialog('open');
+    }
+
+    static GetNextObject(id)
+    {
+        for(var i = this._all.length -2; i >= 0; --i)
         {
-            if( GalleryItem._LoadedItems[i].id == productid )
+            if( this._all[i]._model.id == id )
             {
-                return GalleryItem._LoadedItems[i];
+                return this._all[++i];
             }
         }
+        return this._all[0];
     }
 
-    static RemoveAll()
+    static GetPrevObject(id)
     {
-        for(var i = GalleryItem._LoadedItems.length -1; i >= 0; --i)
+        for(var i = this._all.length -1; i >= 1; --i)
+        {
+            if( this._all[i]._model.id == id )
+            {
+                return this._all[--i];
+            }
+        }
+        return this._all[ this._all.length -1 ];
+    }
+
+    static removeAll()
+    {
+        for(var i = this._all.length -1; i >= 0; --i)
         {
             //destroy DOM
-            GalleryItem._LoadedItems[i].div.remove()
+            this._all[i].div.remove()
             //unregister this
-            delete GalleryItem._LoadedItems[i];
+            delete this._all[i];
         }
-        GalleryItem._LoadedItems = [];
-    }
-
-    static GetNextObject(productid)
-    {
-        for(var i = GalleryItem._LoadedItems.length -2; i >= 0; --i)
-        {
-            if( GalleryItem._LoadedItems[i].id == productid )
-            {
-                return GalleryItem._LoadedItems[++i];
-            }
-        }
-        return GalleryItem._LoadedItems[0];
-    }
-
-    static GetPrevObject(productid)
-    {
-        for(var i = GalleryItem._LoadedItems.length - 1; i >= 1; --i)
-        {
-            if( GalleryItem._LoadedItems[i].id == productid )
-            {
-                return GalleryItem._LoadedItems[--i];
-            }
-        }
-        return GalleryItem._LoadedItems[ GalleryItem._LoadedItems.length ];
+        this._all = [];
     }
 }
 
 
 /*
 |------------------------------------------------
-| List Stuff
+| Shopcarted Products
 |------------------------------------------------
 */
 
-function addProductToCart(productid)
-{
-    var cartitem = $('<div>');
+class ShopcartProductView
+{ 
+    static _all = [];
 
-    var thumb = $('<img>');
-    thumb.addClass('img-fluid');
-    thumb.prop("src", "ugc/thumb/"+ productid +".jpg");
-    cartitem.append(thumb);
+    constructor(model)
+    {
+        //register this
+        ShopcartProductView._all.push(this);
 
-    cartitem.append('<span>€ 10,--</span>');
+        this._model = model;
 
-    var btn_uncart = $('<button>');
-    btn_uncart.html('<span class="ui-icon ui-icon-arrowreturn-1-w">Entfernen');
-    btn_uncart.on('click', function()
+        this.div = $('<div>');
+
+        this.img = $('<img>');
+        this.img.addClass('img-fluid');
+        this.img.prop('src', 'ugc/thumb/'+ this._model.id +'.jpg');
+        this.div.append(this.img);
+
+        this.div.append('<span>€ 10,--</span>');
+
+        this.btn_uncart = $('<button>');
+        this.btn_uncart.html('<span class="ui-icon ui-icon-arrowreturn-1-w">Entfernen');
+        this.btn_uncart.on('click', this.onclick_uncart.bind(this));
+        this.div.append(this.btn_uncart);
+
+        $('#shopcart_list').append(this.div);
+    }
+
+    onclick_uncart(e)
     {
         //TODO tell server to uncart this, refresh based on response (and maybe give subtle success confirmation, e.g. fadeout using JQuery UI)
-    });
-    cartitem.append(btn_uncart);
+    }
 
-    $('#shopcart_list').append(cartitem);
-}
-
-function setProductDetailsByID(productid)
-{
-    setProductDetailsByObject(GalleryItem.GetObjectByID(productid));
-}
-
-function setProductDetailsByObject(galleryitem)
-{
-    alert("NEW DETAILS " + galleryitem.id);
-    $('#dialog_productdetails').attr('productid', galleryitem.id);
-    $('#productdetails_img').prop('src','ugc/full/'+ galleryitem.id +'/johanna-pferd.jpg') //TODO fetch real image name from server
-    //TODO clear and repopulate $('#productdetails_taglist')
-    $('#productdetails_geodata').html('(171,64/92,08)'); //TODO use actual data
+    static removeAll()
+    {
+        for(var i = this._all.length -1; i >= 0; --i)
+        {
+            //destroy DOM
+            this._all[i].div.remove()
+            //unregister this
+            delete this._all[i];
+        }
+        this._all = [];
+    }
 }
 
 
@@ -282,11 +318,15 @@ jQuery(document).ready(function($)
 
     $('#productdetails_prev').on('click', function(e)
     {
-        setProductDetailsByObject(GalleryItem.GetPrevObject($('#dialog_productdetails').attr('productid')));
+        GalleryProductView
+            .GetPrevObject($('#dialog_productdetails').attr('productid'))
+                .setProductDetailsToThis();
     });
     $('#productdetails_next').on('click', function(e)
     {
-        setProductDetailsByObject(GalleryItem.GetNextObject($('#dialog_productdetails').attr('productid')));
+        GalleryProductView
+            .GetNextObject($('#dialog_productdetails').attr('productid'))
+                .setProductDetailsToThis();
     });
 
 
@@ -331,14 +371,18 @@ jQuery(document).ready(function($)
 
 
     /* dummies for UI tests */
-    new SidebarTag( 0, "Österreich", $('#taglist') );
-    new SidebarTag( 1, "Wien", $('#taglist') );
-    new SidebarTag( 2, "Semmering", $('#taglist') );
-    new GalleryItem( "1234", 1, true, $('#gallery_list') );
-    new GalleryItem( "1234", 2, false, $('#gallery_list') );
-    new GalleryItem( "4321", 1, false, $('#gallery_list') );
-    new GalleryItem( "1234", 0, true, $('#gallery_list') );
-    addProductToCart("1234");
-    addProductToCart("4321");
+    var prod0 = new GalleryProductModel( '1234', 'exampleuser0', '(142.5/20.3)');
+    var prod1 = new GalleryProductModel( '4321', 'exampleuser1', null);
+    var tag0 = new GalleryTagModel( 1, 'Österreich');
+    var tag1 = new GalleryTagModel( 2, 'Wien');
+    var tag2 = new GalleryTagModel( 2, 'Semmering');
+
+    new SidebarTagView( tag0 );
+    new SidebarTagView( tag1 );
+    new SidebarTagView( tag2 );
+    new GalleryProductView( prod0 );
+    new GalleryProductView( prod1 );
+    new ShopcartProductView( prod0 );
+    new ShopcartProductView( prod1 );
 
 });
