@@ -1,0 +1,63 @@
+
+/* Debug yey *
+* {
+    border: 1px gray solid;
+}
+*/
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+.gallery-root {
+    display: grid;
+    grid-template-columns: auto min-content;
+}
+
+.sidebar-tag-draggable {
+    cursor: pointer;
+}
+
+.sidebar-taglist {
+    overflow: auto; /* scrollbar if needed, also requires set height/width to work */
+}
+
+.gallery-list {
+    display: grid;
+    grid-template-columns: min-content min-content min-content; /*TODO consider adding Media queries (or better yet, somehow check this things width) to adapt this as needed*/
+    grid-gap: 1em;
+    overflow: auto; /* scrollbar if needed, also requires set height/width to work */
+}
+
+.gallery-item {
+
+}
+
+.gallery-item img {
+    cursor: pointer;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.dialog-image {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.badge-bg-yellow, .badge-bg-green {
+    border-radius: 30%;
+    border-width: 1pt;
+    border-style: solid;
+}
+
+.badge-bg-yellow {
+    border-color: #996;
+    background-color: #CC9;
+}
+
+.badge-bg-green {
+    border-color: #696;
+    background-color: #9C9;
+}
+
