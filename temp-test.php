@@ -17,18 +17,15 @@ spl_autoload_register(function ($class) {
     }
 });
 
- $user = new User('asdf');
-//  echo $user->ex_username;
-//  $user->ex_firstname = 'Emil';
-//  echo $user->ex_firstname;
- //$user->ex_username = 'username';
+$userObj = new UserView();
+//$userObj->showUser("asdf");
 
- $user->createUser();
+$userArr = array("username"=>"csdf", "password"=>"pass", "email"=>"emai", "title"=>"Mr", "firstname"=>"Bobo", "lastname"=>"Bibo",
+"address"=>"asfjs", "location"=>"vienna", "plz"=>"1234", "is_admin"=>"0", "is_active"=>"0" );
 
- //$user->setUser('Benjamin', 'Blümchen', 'töröö');
- //echo $user->ex_firstname;
+$userObj->createUser($userArr);
 
- print "<br><br>";
- foreach(ini_get_all() as $key=>$value) { echo $key, ' => ', $value['local_value'], '<br>'; }
+//  print "<br><br>";
+//  foreach(ini_get_all() as $key=>$value) { echo $key, ' => ', $value['local_value'], '<br>'; }
 
- echo empty(ini_get('display_errors'));
+//  echo empty(ini_get('display_errors'));
