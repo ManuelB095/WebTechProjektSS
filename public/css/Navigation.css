@@ -1,0 +1,18 @@
+/* Nav-Bar */
+
+body {
+    padding-top: 100px; /*As Required by Bootstrap Documentation for Fixed Navbar; Stops Overlap */
+}
+
+.fh_logo {
+    max-width: 100px;
+    min-width: 100px;
+}
+
+.nav-item {
+    font-size: 1.4rem;
+}
+
+#showTimeItem {
+    color: black;
+}
