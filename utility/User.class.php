@@ -4,6 +4,7 @@ class User extends DB{
 
     protected $table;
     protected $PK;
+    protected $fieldSize; // How many fields are in the given database ( Error Handling )
     protected $whiteList = ["username", "password", "email", "title", "firstname", "lastname", 
     "address", "location", "plz", "is_admin", "is_active"];
     protected $necessarys = ["username", "password", "firstname", "lastname", "address", "is_admin", "is_active"];
@@ -17,6 +18,7 @@ class User extends DB{
     {
         $this->table = "users";
         $this->PK = "username"; 
+        $this->fieldSize = 11;
     }
 
     function __get($var)
@@ -26,7 +28,7 @@ class User extends DB{
 
     function __set($var, $value)
     {
-        // TO DO
+        $this->var = $value;
     }
 
     protected function getUser($ex_username)

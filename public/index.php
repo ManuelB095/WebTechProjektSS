@@ -22,7 +22,7 @@ require_once('../init.php');
 <body>
 
     <nav>
-        <a href="shop">Gallerie</a>
+        <a href="shop">Galerie</a>
         <a href="help">Hilfe</a>
         <a href="rss">RSS Feed</a>
         <a href="admin">Administration</a>

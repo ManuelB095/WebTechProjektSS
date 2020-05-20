@@ -1,4 +1,4 @@
-<h1>Gallerie</h1>
+<h1>Galerie</h1>
 <button id="btn_delete"><span class="ui-icon ui-icon-trash"></span>Gewählte löschen</button>
 <button id="btn_download"><span class="ui-icon ui-icon-arrowthickstop-1-s"></span>Gewählte herunterladen</button>
 <button id="btn_addcart"><span class="ui-icon ui-icon-cart"></span>Gewählte in Warenkorb</button>

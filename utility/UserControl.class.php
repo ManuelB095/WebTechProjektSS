@@ -12,40 +12,119 @@ class UserControl extends User{
         $this->errorMsg = array();
     }
 
-  // TO DO: Checks in dedicated functions
+    /*
+    |------------------------------------------------
+    | Main Functions
+    |------------------------------------------------
+    */
+
     public function createUser($assArray)
     {
-        if(count($assArray) > 11)
+      // Error Handling 
+       $this->checkArgumentCount($assArray); // Too many arguments ? ( Here > 11 )
+       $this->lookForNecessarys($assArray); // Necessary Fields included ? ( Here 7)
+       $this->checkIfWhitelisted($assArray); // Rest of the fields white-listed ?
+       $this->hashPWIn($assArray);
+       $this->autoNullMissingFields($assArray); //PHPMyAdmin does this by default; Maybe exlude ?
+      // Only access database if no error occured.
+        if($this->error <= 0)
+        {
+            echo "<br>SET USER IS PROCESSED<br>";
+            $this->setUser($assArray);
+        }
+    }
+
+    public function editUser($assArray, $username = null) // OPTIONAL : Include Primary Key in array OR as extra variable
+    {
+      // Error Handling
+        $this->checkArgumentCount($assArray);
+        $this->checkIfWhitelisted($assArray);
+        $this->hashPWIfNecessary($assArray);
+
+      // Check if optional is given and prepare accordingly
+        if($username != null && !array_key_exists($this->PK,$assArray))
+        {
+            $assArray[$this->PK] = $username;
+        }
+        else if($username != null && array_key_exists($this->PK,$assArray))
         {
             $this->error += 1;
-            array_push($this->errorMsg, "ERROR: Too many arguments for \$userInformation !<br>");
+            array_push($this->errorMsg, "ERROR: Primary Key '" . $this->PK ."' is already in \$assArray<br>");         
         }
 
-      // Check for necessarys and throw error if not in here; Try/catch and throw here instead ?
-        foreach($this->necessarys as $key)
-        {
-            if(!array_key_exists($key, $assArray))
-            {
-                $this->error += 1;
-                array_push($this->errorMsg, "ERROR: Necessary field '" . $key ."' is missing from \$assArray<br>");
-                
-                break;
-            }
-        }
-        echo "NECESSARYS: <br>";
-        var_dump($assArray);
+      // Only access database if no error occured.
+         if($this->error <= 0)
+         {
+             echo "<br>SET USER IS PROCESSED<br>";
+             $this->updateUser($assArray);
+         }
+    }
 
-        foreach($this->whiteList as $key)
-        {
-          // If too few ( non-necessarys ) arguments are given, stock up the remaining ones with null
-            if(!array_key_exists($key, $assArray))
-            {
-                $assArray[$key] = ""; // For some reason = NULL does not work with phpMyAdmin
-            }
-        }
+    // QUESTION: Do we need a Delete User too ?
+    public function hashPWIfNecessary(&$assArray)
+    {
         $submittedKeys = array_keys($assArray);
-        echo "Submitted Keys<br>";
-        var_dump($submittedKeys);
+        if(array_key_exists('password', $assArray))
+        {
+            $hashedPW = $this->getHashedPassword($assArray['password']);
+            print "Hashed :" . $hashedPW . "<br>";
+            $assArray['password'] = $hashedPW;
+        }
+    }
+
+    public function hashPWIn(&$assArray)
+    {
+        if(!array_key_exists('password', $assArray))
+        {
+            $this->error += 1;
+            array_push($this->errorMsg, "ERROR: No 'password' field in \$assArray<br>");     
+        }
+        else
+            $this->hashPWIfNecessary($assArray);
+    }
+
+    public function getHashedPassword($pwd=''){
+        return password_hash($pwd, PASSWORD_DEFAULT); // returns 60 digit of hex chars
+    }
+
+    private function isPasswordCorrect($hashedPW, $PWfromDB)
+    {
+        return password_verify($hashedPW, $PWfromDB); // Verify that typed password/Username Combination is the same as the ( hashed one in the database )
+    }
+
+
+    /*
+    |------------------------------------------------
+    | Error Handling Section
+    |------------------------------------------------
+    */
+    public function checkIfUserExists($username)
+    {
+        $results = $this->getUser($username);
+        if($results[$this->PK] != $username)
+        {
+
+        }
+    }
+
+    public function lookForNecessarys($assArray)
+    {
+         // Check for necessarys and throw error if not in here; Try/catch and throw here instead ?
+         foreach($this->necessarys as $key)
+         {
+             if(!array_key_exists($key, $assArray))
+             {
+                 $this->error += 1;
+                 array_push($this->errorMsg, "ERROR: Necessary field '" . $key ."' is missing from \$assArray<br>");
+                 
+                 break;
+             }
+         }
+    }
+
+    public function checkIfWhitelisted($assArray)
+    {
+        $submittedKeys = array_keys($assArray);
         foreach($submittedKeys as $key)
         {
             if(!in_array($key, $this->whiteList))
@@ -55,32 +134,56 @@ class UserControl extends User{
                 break;
             }
         }
-        
-        echo "WHITELIST: <br>";
-        var_dump($this->whiteList);
-      // Only access database if no error occured.
-        if($this->error <= 0)
+    }
+
+    public function checkArgumentCount($assArray)
+    {
+        if(count($assArray) > $this->fieldSize)
         {
-            echo "<br>SET USER IS PROCESSED<br>";
-            $this->setUser($assArray);
+            $this->error += 1;
+            array_push($this->errorMsg, "ERROR: Too many arguments for \$userInformation !<br>");
         }
     }
 
-  // TO DO: updateUser($username, $assArray)
-    public function editUser($assArray, $username = null)
+    public function autoNullMissingFields($assArray)
     {
-        $this->updateUser($assArray);
+        foreach($this->whiteList as $key)
+        {
+          // If too few ( non-necessarys ) arguments are given, stock up the remaining ones with null
+            if(!array_key_exists($key, $assArray))
+            {
+                $assArray[$key] = ""; // For some reason = NULL does not work with phpMyAdmin
+            }
+        }
     }
 
-    public function checkNecessarys()
-    {
+    // !! ATTENTION !! 
+    // PHP seems to take care of this one themselves and just does not save duplicates in the first place
+    // This means, that it is not really possible to catch this error
+    /* public function checkForDuplicates($assArray)
+    // {
+    //   // CKey = Compare Key; Ikey = Iterate Key
+    //     var_dump($assArray);
+    //     $submittedKeys = array_keys($assArray);
+    //     foreach($submittedKeys as $Ckey)
+    //     {
+    //         $CKeyCount = 0;
+    //         foreach($submittedKeys as $Ikey)
+    //         {
+    //             if($Ckey == $Ikey)
+    //             {
+    //                 ++$CKeyCount;
+    //             }
+    //             if($CKeyCount > 1) // Same Key is in array more than once
+    //             {
+    //                 $this->error += 1;
+    //                 array_push($this->errorMsg, "ERROR: Double-entry for '".$Ckey."' in \$assArray !<br>");
+    //             }
+    //         }
+    //         print "CKEY ". $Ckey . $CKeyCount . "<br>";
 
-    }
-
-    public function checkWhitelist()
-    {
-
-    }
+    //     }
+    // } */
 
     public function showErrors()
     {

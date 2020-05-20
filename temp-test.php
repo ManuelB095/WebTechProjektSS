@@ -27,15 +27,35 @@ $userArr1 = array("extra"=>"extra", "double"=>"double", "testi"=>"test", "passwo
 $userArr2 = array("username"=>"csdf", "password"=>"pass", "email"=>"emai", "title"=>"Mr", "firstname"=>"Bobo", "lastname"=>"Bibo",
 "address"=>"asfjs", "plz"=>"1234", "is_admin"=>"0", "is_active"=>"0" );
 // This one is 100% correct
-$userArr3 = array("username"=>"asdf","password"=>"uuuuuuuuuuuuuuuuu", "email"=>"emai", "title"=>"Mr", "firstname"=>"Bobo", "lastname"=>"Bibo",
-"address"=>"asfjs", "location" => "vienna", "plz"=>"1234", "is_admin"=>"0", "is_active"=>"0" );
+$userArr3 = array("username"=>"asdf", "password"=>"halloo","email"=>"emma", "email"=>"emai", "title"=>"Mr", "firstname"=>"Bobo", "lastname"=>"Bibo",
+"address"=>"asfjs", "location" => "vienna", "is_admin"=>"0", "is_active"=>"0" );
 
-// $userObj->createUser($userArr);
-// $userObj->showErrors();
+// Testing Grounds
 
-$userObj->editUser($userArr3);
+// $userObj->createUser($userArr3);
+// $userObj->editUser($userArr3);
+?>
+<nav>
+        <a href="shop">Galerie</a>
+        <a href="help">Hilfe</a>
+        <a href="rss">RSS Feed</a>
+        <a href="admin">Administration</a>
+        <?php
+        if( TRUE ) {
+        ?>
+            <a><?php //TODO insert username, clickable for profile settings? ?></a>
+            <a>Logout</a>
+        <?php
+        } else { //nicht angemeldet
+        ?>
+            <a>Registrieren</a>
+            <a>Login</a>
+        <?php } ?>
+    </nav>
+
+<?php
 
 //  print "<br><br>";
 //  foreach(ini_get_all() as $key=>$value) { echo $key, ' => ', $value['local_value'], '<br>'; }
 
-//  echo empty(ini_get('display_errors'));
+//  echo empty(ini_get('display_errors')); ?>
