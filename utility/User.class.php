@@ -8,6 +8,7 @@ class User extends DB{
     protected $whiteList = ["username", "password", "email", "title", "firstname", "lastname", 
     "address", "location", "plz", "is_admin", "is_active"];
     protected $necessarys = ["username", "password", "firstname", "lastname", "address", "is_admin", "is_active"];
+    protected $publicFields = ["username", "email", "title", "firstname", "lastname", "address", "location", "plz", "is_admin", "is_active"];
 
     // TO DO List:
     // getUser("Username");
@@ -91,6 +92,25 @@ class User extends DB{
         var_dump($userInformation);
         $stmt->execute($userInformation);
         
+    }
+
+    function getJSON($ex_username)
+    {
+        $sql = "SELECT * FROM {$this->table} WHERE username = ?"; // TO DO: Re-Write and Debug to $this->PK
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->execute([$ex_username]);
+        $results = $stmt->fetchAll();
+        if(!empty($results))
+        {
+            assert( count($results) < 2 );
+            
+            $obj = [];
+            foreach($this->publicFields as $fieldname)
+            {
+                $obj[$fieldname] = $results[0][$fieldname];
+            }
+            return json_encode($obj);
+        }
     }
 
 }

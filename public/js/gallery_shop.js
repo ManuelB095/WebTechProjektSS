@@ -367,6 +367,28 @@ jQuery(document).ready(function($)
     $('#btn_tags_delete').on('click', function(e)
     {
         //TODO tell server to delete checked tags, remove based on response (or simply refresh all), give clear success message (including number of actually deleted tags?)
+
+        //TODO the following is just a test
+        var fd = new FormData();
+        fd.append("action", 'user');
+        fd.append("username", 'asdf');
+        $.ajax({
+            url: 'actions.php?action=user&username=asdf', //TODO FormData does not seem to work, so I did this for now -LG
+            type: 'get',
+            data: fd,
+            contentType: false,
+            processData: false,
+            cache: false,
+            //dataType: 'json',
+            success: function(response)
+            {
+                alert(response);
+            },
+            error: function(jqxhr, status, exception)
+            {
+                alert(exception);
+            },
+        });
     });
 
 
@@ -380,9 +402,24 @@ jQuery(document).ready(function($)
     new SidebarTagView( tag0 );
     new SidebarTagView( tag1 );
     new SidebarTagView( tag2 );
-    new GalleryProductView( prod0 );
     new GalleryProductView( prod1 );
-    new ShopcartProductView( prod0 );
     new ShopcartProductView( prod1 );
+    $.ajax({
+            url: 'actions.php?action=image&id=1234', //TODO FormData does not seem to work, so I did this for now -LG
+            type: 'get',
+            contentType: false,
+            processData: false,
+            cache: false,
+            //dataType: 'json',
+            success: function(response)
+            {
+                new ShopcartProductView(response);
+                new GalleryProductView(response);
+            },
+            error: function(jqxhr, status, exception)
+            {
+                alert(exception);
+            },
+        });
 
 });
