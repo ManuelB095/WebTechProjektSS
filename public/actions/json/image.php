@@ -9,5 +9,5 @@ if(!empty( $imageid )) //&& !empty($user = User()->getUser($username)) )
 }
 */
 
-echo '{"id":"1234","filename":"johanna-pferd.jpg","access":"1"}';
+echo '{"id":"1234","filename":"dog-digging-sand-his-head-sand-beach-77290281.jpg","access":"1"}';
 

@@ -179,7 +179,7 @@ class GalleryProductView
     setProductDetailsToThis()
     {
         $('#dialog_productdetails').attr('productid', this._model.id);
-        $('#productdetails_img').prop('src','ugc/full/'+ this._model.id +'/johanna-pferd.jpg') //TODO fetch real image name from server
+        $('#productdetails_img').prop('src','ugc/full/'+ this._model.id +'/'+this._model.filename);
         DetailsTagView.removeAll();
         //TODO foreach model.tags do new DetailsTagView(tag)
         $('#productdetails_geodata').html('(171,64/92,08)'); //TODO use actual data
@@ -367,59 +367,56 @@ jQuery(document).ready(function($)
     $('#btn_tags_delete').on('click', function(e)
     {
         //TODO tell server to delete checked tags, remove based on response (or simply refresh all), give clear success message (including number of actually deleted tags?)
-
-        //TODO the following is just a test
-        var fd = new FormData();
-        fd.append("action", 'user');
-        fd.append("username", 'asdf');
-        $.ajax({
-            url: 'actions.php?action=user&username=asdf', //TODO FormData does not seem to work, so I did this for now -LG
-            type: 'get',
-            data: fd,
-            contentType: false,
-            processData: false,
-            cache: false,
-            //dataType: 'json',
-            success: function(response)
-            {
-                alert(response);
-            },
-            error: function(jqxhr, status, exception)
-            {
-                alert(exception);
-            },
-        });
     });
 
 
     /* dummies for UI tests */
-    var prod0 = new GalleryProductModel( '1234', 'exampleuser0', '(142.5/20.3)');
-    var prod1 = new GalleryProductModel( '4321', 'exampleuser1', null);
-    var tag0 = new GalleryTagModel( 1, 'Österreich');
-    var tag1 = new GalleryTagModel( 2, 'Wien');
-    var tag2 = new GalleryTagModel( 2, 'Semmering');
-
-    new SidebarTagView( tag0 );
-    new SidebarTagView( tag1 );
-    new SidebarTagView( tag2 );
-    new GalleryProductView( prod1 );
-    new ShopcartProductView( prod1 );
+    new SidebarTagView( {'id':1,'value':'Österreich'} );
+    new SidebarTagView( {'id':2,'value':'Wien'} );
+    new SidebarTagView( {'id':3,'value':'Semmering'} );
+    new GalleryProductView( {'id':'4321','filename':'johanna-pferd.jpg','access':2,'geodata':'(142.5/20.3)'} );
+    new ShopcartProductView( {'id':'4321','filename':'johanna-pferd.jpg','access':2,'geodata':'(142.5/20.3)'} );
+    /* ajax test dummy */
+    //TODO automatically do this for all images (requires an ajax call for all the image ids, or for an array of all images directly)
     $.ajax({
-            url: 'actions.php?action=image&id=1234', //TODO FormData does not seem to work, so I did this for now -LG
-            type: 'get',
-            contentType: false,
-            processData: false,
-            cache: false,
-            //dataType: 'json',
-            success: function(response)
-            {
-                new ShopcartProductView(response);
-                new GalleryProductView(response);
-            },
-            error: function(jqxhr, status, exception)
-            {
-                alert(exception);
-            },
-        });
+        url: 'actions.php?action=image&id=1234', //TODO FormData does not seem to work, so I did this for now -LG
+        type: 'get',
+        contentType: false,
+        processData: false,
+        cache: false,
+        dataType: 'json',
+        success: function(response)
+        {
+            new ShopcartProductView(response);
+            new GalleryProductView(response);
+        },
+        error: function(jqxhr, status, exception)
+        {
+            alert(exception);
+        },
+    });
+
+
+    //TODO the following is just a test
+    var fd = new FormData();
+    fd.append("action", 'user');
+    fd.append("username", 'asdf');
+    $.ajax({
+        url: 'actions.php?action=user&username=asdf', //TODO FormData does not seem to work, so I did this for now -LG
+        type: 'get',
+        data: fd,
+        contentType: false,
+        processData: false,
+        cache: false,
+        //dataType: 'json',
+        success: function(response)
+        {
+            alert(response);
+        },
+        error: function(jqxhr, status, exception)
+        {
+            alert(exception);
+        },
+    });
 
 });

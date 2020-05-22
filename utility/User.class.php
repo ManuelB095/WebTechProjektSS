@@ -107,6 +107,7 @@ class User extends DB{
             $obj = [];
             foreach($this->publicFields as $fieldname)
             {
+                //TODO maybe omit some additional fields depending on login status?
                 $obj[$fieldname] = $results[0][$fieldname];
             }
             return json_encode($obj);
