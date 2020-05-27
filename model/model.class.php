@@ -10,12 +10,22 @@ class Model
 
     private $primary_key_column;
     private $table;
-    private $fields = [];
+    protected $fields = [];
 
     /*
     |------------------------------------------------
     | Magic Methods
     |------------------------------------------------
+    */
+
+    /*
+    function __destruct()
+    {
+        //dtor
+
+        // Do not save automatically, it may have been a read-only anyways
+        //$this->SaveChanges();
+    }
     */
 
     function __get($field)
@@ -42,19 +52,25 @@ class Model
     {
         $this->table = $table;
         $this->primary_key_column = $key;
-        $db = new DB();
-        //TODO this is unsecured and also doesn't use the DB class
-        $stmt = $db->pdo->query("SELECT * FROM $table WHERE $key = '$value';");
+        $db = new DB("SELECT * FROM {$this->table} WHERE $key = :value ");
+        $fetched = $db->Fetch(['value'=>$value]);
+
+        if(empty( $fetched ))
+        {
+            return FALSE;
+        }
+
+        assert( count($fetched) < 2 );
         
         /* Metadata includes type &c. If we want automated type validation, this will come in handy.
-        for($i = 0; $i<$stmt->columnCount(); ++$i)
+        for($i = 0; $i<$pdo_statement->columnCount(); ++$i)
         {
-            $meta = $stmt->getColumnMeta($i);
+            $meta = $pdo_statement->getColumnMeta($i);
             $this->fields[$meta['name']] => ;
         }
         */
 
-        foreach($stmt->fetch() as $column => $field)
+        foreach($fetched[0] as $column => $field)
         {
             if( gettype($column) == 'string')
             {
@@ -64,10 +80,9 @@ class Model
         return TRUE;
     }
 
-    protected function PushChanges()
+    protected function SaveChanges()
     {
-        /*TODO 'UPDATE' the DB
-        $sql = "UPDATE $table SET ";
+        $sql = "UPDATE {$this->table} SET ";
         foreach($this->fields as $column => $field)
         {
             if( $column != $this->primary_key_column )
@@ -75,13 +90,8 @@ class Model
                 $sql .= "$column = :$column ";
             }
         }
-        $sql .= "WHERE $primary_key_column = :$primary_key_column";
-        $stmt = $db->prepare($sql);
-        foreach($this->fields as $column => $field)
-        {
-            $stmt->bindParam(':'. $column, $field);
-        }
-        $stmt->execute();
-        */
+        $sql .= "WHERE {$this->primary_key_column} = :{$this->primary_key_column}";
+        $db = new DB($sql);
+        $db->Fetch($this->fields);
     }
 }

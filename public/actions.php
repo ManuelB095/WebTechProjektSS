@@ -6,15 +6,22 @@ require_once("../init.php");
 | Routing
 |------------------------------------------------
 |
-| Disclaimer: Not actual routing, but having the files
-| require a specific relative path to init sucks
-| and feels like a depedency inversion
-| matter but this mitigates the problem. -LG
+| Disclaimer: Not proper routing, but requiring
+| a specific relative path to init sucks
+| and feels like a deep depedency inversion
+| problem but this mitigates it and was quick. -LG
 |
 */
 
 $filepath = filter_input(INPUT_GET, "action", FILTER_SANITIZE_STRING);
-if(!empty( $filepath ) && file_exists("actions/json/$filepath.php"))
+if(!empty( $filepath )) 
 {
-    include("actions/json/$filepath.php");
+    if( file_exists("../controller/$filepath.php") )
+    {
+        include("../controller/$filepath.php");
+    }
+    else if( file_exists("../json/$filepath.php") )
+    {
+        include("../json/$filepath.php");
+    }
 }

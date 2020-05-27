@@ -24,7 +24,6 @@ spl_autoload_register(function ($class) {
     }
 });
 
-include_once '../utility/User.class.php';
 /*
 |------------------------------------------------
 | Session
