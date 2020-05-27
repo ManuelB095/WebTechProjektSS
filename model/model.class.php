@@ -1,107 +1,87 @@
 <?php
 
-// This is meant as a rough blueprint, documenting how and why this class (family) works.
-// Copy and repurpose according to your needs.
-class Model extends DB{
+class Model
+{
+    /*
+    |------------------------------------------------
+    | Variables
+    |------------------------------------------------
+    */
 
-    protected $table; // Example: 'users' for the Users, 'products' for Products etc.
-    protected $PK; // Primary Key of the table
-    protected $fieldSize; // How many fields are in the given database ( Error Handling )
-    protected $whiteList = []; // Contains the allowed attributes for the given table
-    protected $necessarys = []; // Contains necessary attributes for a new entry in the table
+    private $primary_key_column;
+    private $table;
+    private $fields = [];
 
-    // TO DO List:
-    // getUser("Username");
-    // setUser("Username", array with values); == update User
-    // ...
+    /*
+    |------------------------------------------------
+    | Magic Methods
+    |------------------------------------------------
+    */
 
-    function __construct()
+    function __get($field)
     {
-        $this->table = "";
-        $this->PK = ""; 
-        $this->fieldSize = -1; 
+        return $this->fields[$field];
     }
 
-  // If you want to change table and attributes manually, you 'can' do that in the code with magic methods
-    function __get($var)
+    function __set($field, $value)
     {
-        return $var;
-    }
-
-    function __set($var, $value)
-    {
-        $this->var = $value;
-    }
-
-    protected function getUser($ex_username)
-    {
-        $sql = "SELECT * FROM $this->table WHERE".$this->PK." = ?";
-        $stmt = $this->connect()->prepare($sql);
-        $stmt->execute([$ex_username]);
-        $results = $stmt->fetchAll(); // QUESTION: Should we change this to FETCH::CLASS, like Tim suggested and save them as member variables ?
-        return $results;
-    }
-
-    protected function setUser($userInformation)
-    {
-        $keys = array_keys($userInformation);
-        $sql = "INSERT INTO ".$this->table."(".implode(", ",$keys).") \n"; 
-        $sql .= "VALUES ( :".implode(", :",$keys).")";        
-        $stmt = $this->connect()->prepare($sql);
-        print "UserInfo<br>";
-        var_dump($userInformation);
-        $stmt->execute($userInformation);
-        print "<br>SQL:". $sql ."<br>";
-    }
-
-    // TO DO: Make Code less clunky and format sql better
-    // 1. Add Comments
-    // 2. De-Clunkify Code for better reading
-    // 3. Provide Error-Handling ( see To DO in UserControl) here or possibly in UserControl class
-    // 4. Implement optional parameter $username and throw errors accordingly
-    protected function updateUser($userInformation) // columns are $userInformation keys;fields are $userInformation values
-    {
-        $keys = array_keys($userInformation);
-        $values = array_values($userInformation);
-      // UPDATE Statement
-        $sql = "UPDATE ". $this->table;
-      // SET Statement
-        $SETStmt = " SET ";
-        foreach($keys as $key)
+        if( $field == $this->primary_key_column )
         {
-            if($key != $this->PK)
+            assert(FALSE, "Attempt to set primary key $field to $value .");
+        }
+        $this->fields[$field] = $value;
+    }
+
+    /*
+    |------------------------------------------------
+    | Use Functions
+    |------------------------------------------------
+    */
+
+    protected function AutoFillByKeyValue($table, $key, $value)
+    {
+        $this->table = $table;
+        $this->primary_key_column = $key;
+        $db = new DB();
+        //TODO this is unsecured and also doesn't use the DB class
+        $stmt = $db->pdo->query("SELECT * FROM $table WHERE $key = '$value';");
+        
+        /* Metadata includes type &c. If we want automated type validation, this will come in handy.
+        for($i = 0; $i<$stmt->columnCount(); ++$i)
+        {
+            $meta = $stmt->getColumnMeta($i);
+            $this->fields[$meta['name']] => ;
+        }
+        */
+
+        foreach($stmt->fetch() as $column => $field)
+        {
+            if( gettype($column) == 'string')
             {
-                $SetSubStmt = $key." = ".":".$key . ", "; // ex.: 'firstname = :value, '
-                $SETStmt .= $SetSubStmt;
+                $this->fields[ $column ] = $field;
             }
         }
-        $sql .= $SETStmt;
-        $sql = substr($sql, 0, -2); // -2 for the space after ','
-      // WHERE Statement
-        $WHEREStmt = " WHERE ".$this->PK." = :".$this->PK;
-        $sql .= $WHEREStmt;
-        echo "UPDATE-SQL-STATEMENT: <br>";
-        echo $sql;
-      // Prepare FUll SQL
-        $stmt = $this->connect()->prepare($sql);
-
-        // Should this be in UserControl ? Lelt`s leave it be for now..
-        // if($username == null && !array_key_exists($this->PK, $userInformation))
-        // {
-        //     // throw error
-        //     //$userInformation[$this->PK] = $username;
-        // }
-        // else if($username != null && arra_key_exists($this->PK, $userInformation))
-        // {
-        //     // throw another error
-        // }
-        echo "<br>";
-        echo "UPDATE \$userInfo: <br>";
-        var_dump($userInformation);
-        $stmt->execute($userInformation);
-        
+        return TRUE;
     }
 
+    protected function PushChanges()
+    {
+        /*TODO 'UPDATE' the DB
+        $sql = "UPDATE $table SET ";
+        foreach($this->fields as $column => $field)
+        {
+            if( $column != $this->primary_key_column )
+            {
+                $sql .= "$column = :$column ";
+            }
+        }
+        $sql .= "WHERE $primary_key_column = :$primary_key_column";
+        $stmt = $db->prepare($sql);
+        foreach($this->fields as $column => $field)
+        {
+            $stmt->bindParam(':'. $column, $field);
+        }
+        $stmt->execute();
+        */
+    }
 }
-
-?>
