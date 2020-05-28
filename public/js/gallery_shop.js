@@ -378,9 +378,12 @@ jQuery(document).ready(function($)
     new ShopcartProductView( {'id':'4321','filename':'johanna-pferd.jpg','access':2,'geodata':'(142.5/20.3)'} );
     /* ajax test dummy */
     //TODO automatically do this for all images (requires an ajax call for all the image ids, or for an array of all images directly)
+    var fd = new FormData();
+    fd.append("action", 'getimage');
+    fd.append("id", '1234');
     $.ajax({
-        url: 'actions.php?action=getimage&id=1234', //TODO FormData does not seem to work, so I did this for now -LG
-        type: 'get',
+        url: 'actions.php',
+        type: 'post', //TODO FormData does not seem to work with 'get' and I wish to learn why -LG
         contentType: false,
         processData: false,
         cache: false,
@@ -399,11 +402,11 @@ jQuery(document).ready(function($)
 
     //TODO the following is just a test
     var fd = new FormData();
-    fd.append("action", 'user');
+    fd.append("action", 'getuser');
     fd.append("username", 'asdf');
     $.ajax({
-        url: 'actions.php?action=getuser&username=asdf', //TODO FormData does not seem to work, so I did this for now -LG
-        type: 'get',
+        url: 'actions.php',
+        type: 'post',
         data: fd,
         contentType: false,
         processData: false,

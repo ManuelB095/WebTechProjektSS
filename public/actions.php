@@ -13,7 +13,8 @@ require_once("../init.php");
 |
 */
 
-$filepath = filter_input(INPUT_GET, "action", FILTER_SANITIZE_STRING);
+
+$filepath = filter_input(INPUT_POST, "action", FILTER_SANITIZE_STRING);
 if(!empty( $filepath )) 
 {
     if( file_exists("../actions/$filepath.php") )
