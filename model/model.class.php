@@ -103,20 +103,25 @@ class Model
         if( !$this->exists ) return;
 
         $obj = [];
+        $fields = array_keys($this->fields);
 
         if(isset( self::$publicFields ))
         {
             //TODO Maybe blacklist ("hiddenFields") instead of whitelist? -LG
             //TODO Maybe omit more fields depending on login/ownership/admin status? -LG
-            foreach(self::$publicFields as $fieldname)
-            {
-                $obj[$fieldname] = $this->fields[$fieldname];
-            }
-            return json_encode($obj);
+            $fields = self::$publicFields;
         }
-        else
+
+        foreach( $fields as $fieldname )
         {
-            return json_encode($this->fields);
+            $obj[$fieldname] = $this->fields[$fieldname];
         }
-    }
+        
+        if( method_exists($this, 'extendPreJSON') )
+        {
+            $this->extendPreJSON($obj);
+        }
+
+        return json_encode($obj);
+   }
 }

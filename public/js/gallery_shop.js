@@ -135,7 +135,7 @@ class GalleryProductView
         this.div.on('click', this.onclick_div.bind(this));
 
         this.img = $("<img>");
-        this.img.prop('src', 'ugc/thumb/'+ this._model.id +'.jpg');
+        this.img.prop('src', 'ugc/thumb/'+ this._model.pid +'.jpg');
         this.img.draggable({
             revert: true
         });
@@ -159,7 +159,7 @@ class GalleryProductView
             this.div.append( this.ownerbadge );
         }
 
-        if( this._model.geodata )
+        if( this._model.pr_exif )
         {
             this.geobadge = $('<span>');
             this.geobadge.addClass('ui-icon');
@@ -178,8 +178,8 @@ class GalleryProductView
 
     setProductDetailsToThis()
     {
-        $('#dialog_productdetails').attr('productid', this._model.id);
-        $('#productdetails_img').prop('src','ugc/full/'+ this._model.id +'/'+this._model.filename);
+        $('#dialog_productdetails').attr('productid', this._model.pid);
+        $('#productdetails_img').prop('src','ugc/full/'+ this._model.pid +'/'+this._model.pr_filename);
         DetailsTagView.removeAll();
         //TODO foreach model.tags do new DetailsTagView(tag)
         $('#productdetails_geodata').html('(171,64/92,08)'); //TODO use actual data
@@ -197,7 +197,7 @@ class GalleryProductView
     {
         for(var i = this._all.length -2; i >= 0; --i)
         {
-            if( this._all[i]._model.id == id )
+            if( this._all[i]._model.pid == id )
             {
                 return this._all[++i];
             }
@@ -209,7 +209,7 @@ class GalleryProductView
     {
         for(var i = this._all.length -1; i >= 1; --i)
         {
-            if( this._all[i]._model.id == id )
+            if( this._all[i]._model.pid == id )
             {
                 return this._all[--i];
             }
@@ -252,7 +252,7 @@ class ShopcartProductView
 
         this.img = $('<img>');
         this.img.addClass('img-fluid');
-        this.img.prop('src', 'ugc/thumb/'+ this._model.id +'.jpg');
+        this.img.prop('src', 'ugc/thumb/'+ this._model.pid +'.jpg');
         this.div.append(this.img);
 
         this.div.append('<span>€ 10,--</span>');
@@ -374,13 +374,13 @@ jQuery(document).ready(function($)
     new SidebarTagView( {'id':1,'value':'Österreich'} );
     new SidebarTagView( {'id':2,'value':'Wien'} );
     new SidebarTagView( {'id':3,'value':'Semmering'} );
-    new GalleryProductView( {'id':'4321','filename':'johanna-pferd.jpg','access':2,'geodata':'(142.5/20.3)'} );
-    new ShopcartProductView( {'id':'4321','filename':'johanna-pferd.jpg','access':2,'geodata':'(142.5/20.3)'} );
+    new GalleryProductView( {'pid':'4321','pr_filename':'johanna-pferd.jpg','access':2,'pr_exif':'(142.5/20.3)'} );
+    new ShopcartProductView( {'pid':'4321','pr_filename':'johanna-pferd.jpg','access':2,'pr_exif':'(142.5/20.3)'} );
     /* ajax test dummy */
     //TODO automatically do this for all images (requires an ajax call for all the image ids, or for an array of all images directly)
     var fd = new FormData();
-    fd.append("action", 'getimage');
-    fd.append("id", '1234');
+    fd.append("action", 'getproduct');
+    fd.append("pid", '1234');
     $.ajax({
         url: 'actions.php',
         type: 'post', //TODO FormData does not seem to work with 'get' and I wish to learn why -LG
