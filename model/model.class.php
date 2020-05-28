@@ -11,6 +11,7 @@ class Model
     private $primary_key_column;
     private $table;
     protected $fields = [];
+    protected $exists = FALSE;
 
     /*
     |------------------------------------------------
@@ -69,6 +70,8 @@ class Model
             $this->fields[$meta['name']] => ;
         }
         */
+        
+        $this->exists = TRUE;
 
         foreach($fetched[0] as $column => $field)
         {
@@ -93,5 +96,27 @@ class Model
         $sql .= "WHERE {$this->primary_key_column} = :{$this->primary_key_column}";
         $db = new DB($sql);
         $db->Fetch($this->fields);
+    }
+
+    public function getJSON()
+    {
+        if( !$this->exists ) return;
+
+        $obj = [];
+
+        if(isset( self::$publicFields ))
+        {
+            //TODO Maybe blacklist ("hiddenFields") instead of whitelist? -LG
+            //TODO Maybe omit more fields depending on login/ownership/admin status? -LG
+            foreach(self::$publicFields as $fieldname)
+            {
+                $obj[$fieldname] = $this->fields[$fieldname];
+            }
+            return json_encode($obj);
+        }
+        else
+        {
+            return json_encode($this->fields);
+        }
     }
 }
