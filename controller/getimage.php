@@ -1,7 +1,7 @@
 <?php
 
 /*
-$imageid = filter_input(INPUT_GET, "id", FILTER_SANITIZE_STRING);
+$imageid = filter_input(INPUT_POST, "id", FILTER_SANITIZE_STRING);
 if(!empty( $imageid )) //&& !empty($user = User()->getUser($username)) )
 {
     $image = new Image($imageid);

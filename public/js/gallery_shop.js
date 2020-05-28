@@ -384,6 +384,7 @@ jQuery(document).ready(function($)
     $.ajax({
         url: 'actions.php',
         type: 'post', //TODO FormData does not seem to work with 'get' and I wish to learn why -LG
+        data: fd,
         contentType: false,
         processData: false,
         cache: false,

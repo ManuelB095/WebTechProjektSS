@@ -8,7 +8,7 @@ class User extends Model
     |------------------------------------------------
     */
 
-    public static const $publicFields = ["username", "email", "title", "firstname", "lastname", "address", "location", "plz", "is_admin", "is_active"];
+    const publicFields = ["username", "email", "title", "firstname", "lastname", "address", "location", "plz", "is_admin", "is_active"];
 
     /*
     |------------------------------------------------
