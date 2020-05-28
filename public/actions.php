@@ -16,12 +16,12 @@ require_once("../init.php");
 $filepath = filter_input(INPUT_GET, "action", FILTER_SANITIZE_STRING);
 if(!empty( $filepath )) 
 {
-    if( file_exists("../controller/$filepath.php") )
+    if( file_exists("../actions/$filepath.php") )
+    {
+        include("../actions/$filepath.php");
+    }
+    else if( file_exists("../controller/$filepath.php") )
     {
         include("../controller/$filepath.php");
-    }
-    else if( file_exists("../json/$filepath.php") )
-    {
-        include("../json/$filepath.php");
     }
 }

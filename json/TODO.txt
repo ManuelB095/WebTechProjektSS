@@ -1,3 +1,0 @@
-Give these more descriptive names to clarify the JS side?
-On that note, rename the folder as a whole? (remember to update actions.php)
--LG

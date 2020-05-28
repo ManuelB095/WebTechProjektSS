@@ -379,7 +379,7 @@ jQuery(document).ready(function($)
     /* ajax test dummy */
     //TODO automatically do this for all images (requires an ajax call for all the image ids, or for an array of all images directly)
     $.ajax({
-        url: 'actions.php?action=image&id=1234', //TODO FormData does not seem to work, so I did this for now -LG
+        url: 'actions.php?action=getimage&id=1234', //TODO FormData does not seem to work, so I did this for now -LG
         type: 'get',
         contentType: false,
         processData: false,
@@ -402,7 +402,7 @@ jQuery(document).ready(function($)
     fd.append("action", 'user');
     fd.append("username", 'asdf');
     $.ajax({
-        url: 'actions.php?action=user&username=asdf', //TODO FormData does not seem to work, so I did this for now -LG
+        url: 'actions.php?action=getuser&username=asdf', //TODO FormData does not seem to work, so I did this for now -LG
         type: 'get',
         data: fd,
         contentType: false,
