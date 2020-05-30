@@ -369,6 +369,12 @@ jQuery(document).ready(function($)
         //TODO tell server to delete checked tags, remove based on response (or simply refresh all), give clear success message (including number of actually deleted tags?)
     });
 
+    /*
+    |------------------------------------------------
+    | File Upload via Drag-n-Drop
+    |------------------------------------------------
+    */
+
     $('.upload-area').on({
         dragover: function(e)
         {
@@ -419,42 +425,14 @@ jQuery(document).ready(function($)
         },
     })
 
-    /* dummies for UI tests */
-    new SidebarTagView( {'id':1,'value':'Österreich'} );
-    new SidebarTagView( {'id':2,'value':'Wien'} );
-    new SidebarTagView( {'id':3,'value':'Semmering'} );
-    new GalleryProductView( {'pid':'4321','pr_filename':'johanna-pferd.jpg','access':2,'pr_exif':'(142.5/20.3)'} );
-    new ShopcartProductView( {'pid':'4321','pr_filename':'johanna-pferd.jpg','access':2,'pr_exif':'(142.5/20.3)'} );
-    /* ajax test dummy */
-    //TODO automatically do this for all images (requires an ajax call for all the image ids, or for an array of all images directly)
-    var fd = new FormData();
-    fd.append("action", 'getproduct');
-    fd.append("pid", '1234');
-    $.ajax({
-        url: 'actions.php',
-        type: 'post', //TODO FormData does not seem to work with 'get' and I wish to learn why -LG
-        data: fd,
-        contentType: false,
-        processData: false,
-        cache: false,
-        dataType: 'json',
-        success: function(response)
-        {
-            new ShopcartProductView(response);
-            new GalleryProductView(response);
-        },
-        error: function(jqxhr, status, exception)
-        {
-            alert(exception);
-        },
-    });
+    /*
+    |------------------------------------------------
+    | Population
+    |------------------------------------------------
+    */
 
-
-    //TODO the following is just a test
-/*
     var fd = new FormData();
-    fd.append("action", 'getuser');
-    fd.append("username", 'asdf');
+    fd.append('action', 'indexproduct');
     $.ajax({
         url: 'actions.php',
         type: 'post',
@@ -462,16 +440,44 @@ jQuery(document).ready(function($)
         contentType: false,
         processData: false,
         cache: false,
-        //dataType: 'json',
+        dataType: 'json',
         success: function(response)
         {
-            alert(response);
+            for(var i = 0; i < response.length; ++i)
+            {
+                var fd = new FormData();
+                fd.append('action', 'getproduct');
+                fd.append('pid', response[i]);
+                $.ajax({
+                    url: 'actions.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    dataType: 'json',
+                    success: function(response)
+                    {
+                        //new ShopcartProductView(response);
+                        new GalleryProductView(response);
+                    },
+                    error: function(jqxhr, status, exception)
+                    {
+                        alert(exception);
+                    },
+                });
+            }
         },
         error: function(jqxhr, status, exception)
         {
             alert(exception);
         },
     });
-*/
+
+
+    /* dummies for UI tests */
+    new SidebarTagView( {'id':1,'value':'Österreich'} );
+    new SidebarTagView( {'id':2,'value':'Wien'} );
+    new SidebarTagView( {'id':3,'value':'Semmering'} );
 
 });

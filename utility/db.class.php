@@ -77,7 +77,7 @@ class DB
         }
     }
 
-    public function Execute($paramset)
+    public function Execute($paramset = [])
     {
         // phase 3: bind
 
@@ -110,7 +110,7 @@ class DB
         }
     }
 
-    public function Fetch($paramset)
+    public function Fetch($paramset = [])
     {
         $this->Execute($paramset);
 
