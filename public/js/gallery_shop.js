@@ -369,6 +369,55 @@ jQuery(document).ready(function($)
         //TODO tell server to delete checked tags, remove based on response (or simply refresh all), give clear success message (including number of actually deleted tags?)
     });
 
+    $('.upload-area').on({
+        dragover: function(e)
+        {
+            e.preventDefault(); // Bitte die Datei nicht im Browser öffnen
+            $(this).addClass('drag-target');
+        },
+        dragleave: function(e)
+        {
+            $(this).removeClass('drag-target');
+        },
+        drop: function(e)
+        {
+            // Nochmal: Bitte die Datei nicht im Browser öffnen
+            e.stopPropagation();
+            e.preventDefault();
+
+            $(this).removeClass('drag-target');
+
+            var regex_filetypes = /.*\.(jpg|jpeg|png|gif|bmp|webp)$/i;
+            // We could also pre-check magic number via FileReader, but we're not getting paid. :)
+
+            for (var i = 0; i < e.originalEvent.dataTransfer.files.length; ++i)
+            {
+                if(regex_filetypes.test(e.originalEvent.dataTransfer.files[i].name))
+                {
+                    let fd = new FormData();
+                    fd.append('productfile', e.originalEvent.dataTransfer.files[i] );
+                    fd.append('action', 'createproduct');
+                    $.ajax({
+                        url: 'actions.php',
+                        type: 'post',
+                        data: fd,
+                        contentType: false,
+                        processData: false,
+                        cache: false,
+                        dataType: 'json',
+                        success: function(response)
+                        {
+                            new GalleryProductView(response);
+                        },
+                        error: function(jqxhr, status, exception)
+                        {
+                            alert(exception);
+                        },
+                    })
+                }
+            }
+        },
+    })
 
     /* dummies for UI tests */
     new SidebarTagView( {'id':1,'value':'Österreich'} );
@@ -402,6 +451,7 @@ jQuery(document).ready(function($)
 
 
     //TODO the following is just a test
+/*
     var fd = new FormData();
     fd.append("action", 'getuser');
     fd.append("username", 'asdf');
@@ -422,5 +472,6 @@ jQuery(document).ready(function($)
             alert(exception);
         },
     });
+*/
 
 });

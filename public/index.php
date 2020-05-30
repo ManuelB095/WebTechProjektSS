@@ -26,7 +26,10 @@ include("../subpages/navBar.php");
         </div>
     </div>
 
-<!-- TODO perhaps exclude these if already logged in -->
+<?php
+if(empty( $_SESSION['username'] ))
+{
+?>
     <div id="dialog_register" title="Registrieren">
         <form method="post">
             <input id="register_username" name="username" type="text" required placeholder="Nutzername" />
@@ -53,6 +56,6 @@ include("../subpages/navBar.php");
             <button id="btn_register" type="submit">Anmelden</button>
         </form>
     </div>
-
+<?php } ?>
 </body>
 </html>

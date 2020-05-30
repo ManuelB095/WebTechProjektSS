@@ -33,7 +33,7 @@ class DB
     |------------------------------------------------
     */
 
-    function __construct($sql) //, $paramsets)
+    function __construct($sql, $is_transaction = false)
     {
         // phase 1: connect
 
@@ -55,6 +55,13 @@ class DB
             return false;
         }
         $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        $this->pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+
+        // phase 1.5: transaction
+        if( $is_transaction )
+        {
+            $this->pdo->beginTransaction();
+        }
 
         // phase 2: prepare
 
@@ -68,51 +75,9 @@ class DB
             print $e->getMessage();
             return false;
         }
-
-        // phase 3: bind & execute
-        /*
-
-        foreach($paramsets as $paramset)
-        {
-            // bind
-
-            foreach($paramset as $key => $value)
-            {
-                try
-                {
-                    $this->stmt->bindValue($key, $val);
-                }
-                catch(PDOException $e)
-                {
-                    print "ERROR (DB binding): $key => $value";
-                    print $e->getMessage();
-                    return false;
-                }
-            }
-
-            // execute
-
-            try
-            {
-                $this->stmt->execute();
-            }
-            catch(PDOException $e)
-            {
-                print "ERROR (DB executing): $sql\n";
-                var_dump($paramset);
-                print $e->getMessage();
-                return false;
-            }
-        }
-
-        // phase 4: fetch
-        //TODO is there such a thing as fetching for several paramsets? should we account for that? -LG
-
-        return $this->stmt->fetchAll(); //TODO doesn't work on constructor
-        */
     }
 
-    public function Fetch($paramset)
+    public function Execute($paramset)
     {
         // phase 3: bind
 
@@ -143,9 +108,28 @@ class DB
             print $e->getMessage();
             return false;
         }
+    }
 
-        // phase 5: fetch
+    public function Fetch($paramset)
+    {
+        $this->Execute($paramset);
+
+        // phase 5 (select): fetch
 
         return $this->stmt->fetchAll();
+    }
+
+    public function lastInsertID()
+    {
+        // phase 5 (insert): get (generated) primary key
+
+        return $this->pdo->lastInsertID();
+    }
+
+    public function commit()
+    {
+        // phase 5.5: commit changes
+
+        return $this->pdo->commit();
     }
 }

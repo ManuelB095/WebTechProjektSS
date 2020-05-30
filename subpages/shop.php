@@ -4,7 +4,7 @@
 <button id="btn_addcart"><span class="ui-icon ui-icon-cart"></span>Gewählte in Warenkorb</button>
 <button id="btn_showcart"><span class="ui-icon ui-icon-newwin"></span>Zeige Warenkorb</button> <!-- JQuery UI has an icon class for a shopping cart symbol -->
 <div id="gallery_root" class="gallery-root">
-    <section id="gallery_list" class="gallery-list">
+    <section id="gallery_list" class="gallery-list <?php if(!empty( $_SESSION['username'] )) echo "upload-area"; ?>">
         <!-- populated by JS -->
     </section>
     <section id="gallery_sidebar">
@@ -46,7 +46,7 @@
         <!-- populated by JS -->
     </div>
     <p>Gesamtpreis: € <span id="shopcart_total"></span></p>
-    <p>Lieferadresse:<br><?php echo 'Mustergasse 14'; ?><br><?php echo '1010'; ?> <?php echo 'Wien'; //TODO use actual data ?></p>
+    <p>Lieferadresse:<br><?php echo $_SESSION['address']; ?><br><?php echo $_SESSION['plz']; ?> <?php echo $_SESSION['location']; ?></p>
 </div>
 
 <script src="js/gallery_shop.js"></script>
