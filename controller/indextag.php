@@ -1,7 +1,7 @@
 <?php
 
 $response = [];
-$db = new DB("SELECT tid FROM tag");
+$db = new DB("SELECT tid FROM tags");
 $results = $db->Fetch();
 foreach($results as $line)
 {

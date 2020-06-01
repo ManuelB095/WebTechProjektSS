@@ -412,7 +412,7 @@ jQuery(document).ready(function($)
     {
         // tell server to check if #input_new_tag is unique and add it, TODO give clear success/failure message
         let fd = new FormData();
-        fd.append('tagname', $('#input_new_tag').val() );
+        fd.append('t_name', $('#input_new_tag').val() );
         fd.append('action', 'createtag');
         $.ajax({
             url: 'actions.php',

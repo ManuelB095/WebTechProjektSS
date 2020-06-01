@@ -19,7 +19,7 @@ class Tag extends Model
     function __construct($tid)
     {
         //ctor
-        $this->AutoFillByKeyValue('tag','tid',$tid);
+        $this->AutoFillByKeyValue('tags','tid',$tid);
     }
 
     /*
