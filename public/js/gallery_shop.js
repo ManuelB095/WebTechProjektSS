@@ -48,7 +48,7 @@ class SidebarTagView
 
     static removeAll()
     {
-        for(var i = this._all.length -1; i >= 0; --i)
+        for(let i = this._all.length -1; i >= 0; --i)
         {
             //destroy DOM
             this._all[i].div.remove()
@@ -90,7 +90,7 @@ class DetailsTagView
         if( confirm("Wollen Sie diesen Tag entfernen?") )
         {
             // tell models to disassociate from one another and remove this html
-            var fd = new FormData();
+            let fd = new FormData();
             fd.append('action', 'deleteproducttag');
             fd.append('tid', this._model.tid);
             fd.append('pid', $('#dialog_productdetails').attr('productid'));
@@ -118,7 +118,7 @@ class DetailsTagView
 
     static removeAll()
     {
-        for(var i = this._all.length -1; i >= 0; --i)
+        for(let i = this._all.length -1; i >= 0; --i)
         {
             //destroy DOM
             this._all[i].div.remove()
@@ -219,7 +219,7 @@ class GalleryProductView
     ondropreceive_div( e, ui )
     {
         // tell server to tag this product
-        var fd = new FormData();
+        let fd = new FormData();
         fd.append('action', 'createproducttag');
         fd.append('tid', ui.draggable.attr('tagid'));
         fd.append('pid', this._model.pid);
@@ -244,7 +244,7 @@ class GalleryProductView
 
     static GetNextObject(id)
     {
-        for(var i = this._all.length -2; i >= 0; --i)
+        for(let i = this._all.length -2; i >= 0; --i)
         {
             if( this._all[i]._model.pid == id )
             {
@@ -256,7 +256,7 @@ class GalleryProductView
 
     static GetPrevObject(id)
     {
-        for(var i = this._all.length -1; i >= 1; --i)
+        for(let i = this._all.length -1; i >= 1; --i)
         {
             if( this._all[i]._model.pid == id )
             {
@@ -268,7 +268,7 @@ class GalleryProductView
 
     static removeAll()
     {
-        for(var i = this._all.length -1; i >= 0; --i)
+        for(let i = this._all.length -1; i >= 0; --i)
         {
             //destroy DOM
             this._all[i].div.remove()
@@ -321,7 +321,7 @@ class ShopcartProductView
 
     static removeAll()
     {
-        for(var i = this._all.length -1; i >= 0; --i)
+        for(let i = this._all.length -1; i >= 0; --i)
         {
             //destroy DOM
             this._all[i].div.remove()
@@ -462,10 +462,10 @@ jQuery(document).ready(function($)
 
             $(this).removeClass('drag-target');
 
-            var regex_filetypes = /.*\.(jpg|jpeg|png|gif|bmp|webp)$/i;
+            let regex_filetypes = /.*\.(jpg|jpeg|png|gif|bmp|webp)$/i;
             // We could also pre-check magic number via FileReader, but we're not getting paid. :)
 
-            for (var i = 0; i < e.originalEvent.dataTransfer.files.length; ++i)
+            for (let i = 0; i < e.originalEvent.dataTransfer.files.length; ++i)
             {
                 if(regex_filetypes.test(e.originalEvent.dataTransfer.files[i].name))
                 {
@@ -500,7 +500,7 @@ jQuery(document).ready(function($)
     |------------------------------------------------
     */
 
-    var fd = new FormData();
+    let fd = new FormData();
     fd.append('action', 'indexproduct');
     $.ajax({
         url: 'actions.php',
@@ -512,9 +512,9 @@ jQuery(document).ready(function($)
         dataType: 'json',
         success: function(response)
         {
-            for(var i = 0; i < response.length; ++i)
+            for(let i = 0; i < response.length; ++i)
             {
-                var fd = new FormData();
+                let fd = new FormData();
                 fd.append('action', 'getproduct');
                 fd.append('pid', response[i]);
                 $.ajax({
@@ -543,7 +543,7 @@ jQuery(document).ready(function($)
         },
     });
 
-    var fd = new FormData();
+    fd = new FormData();
     fd.append('action', 'indextag');
     $.ajax({
         url: 'actions.php',
@@ -555,9 +555,9 @@ jQuery(document).ready(function($)
         dataType: 'json',
         success: function(response)
         {
-            for(var i = 0; i < response.length; ++i)
+            for(let i = 0; i < response.length; ++i)
             {
-                var fd = new FormData();
+                let fd = new FormData();
                 fd.append('action', 'gettag');
                 fd.append('tid', response[i]);
                 $.ajax({
