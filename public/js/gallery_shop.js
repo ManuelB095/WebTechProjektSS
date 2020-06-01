@@ -79,7 +79,6 @@ class DetailsTagView
         this._model = model;
 
         this.div = $('<div>');
-        this.div.prop('tagid',this._tagid);
         this.div.html( this._model.t_name );
         this.div.on('click', this.onclick_div.bind(this));
 
@@ -88,7 +87,33 @@ class DetailsTagView
 
     onclick_div(e)
     {
-        //TODO ask for confirmation somehow? Then tell models to disassociate from one another and remove this html
+        if( confirm("Wollen Sie diesen Tag entfernen?") )
+        {
+            // tell models to disassociate from one another and remove this html
+            var fd = new FormData();
+            fd.append('action', 'deleteproducttag');
+            fd.append('tid', this._model.tid);
+            fd.append('pid', $('#dialog_productdetails').attr('productid'));
+            $.ajax({
+                url: 'actions.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                cache: false,
+                dataType: 'json',
+                success: function(response)
+                {
+                    //TODO indicate success
+                    //TODO remove this
+                    //TODO is there a clientside copy of the relation that also needs removal?
+                },
+                error: function(jqxhr, status, exception)
+                {
+                    alert(exception);
+                },
+            });
+        }
     }
 
     static removeAll()
@@ -127,10 +152,7 @@ class GalleryProductView
         this.div.addClass("gallery-item");
         this.div.droppable({
             accept: ".sidebar-tag-draggable",
-            drop: function( event, ui ) {
-                //alert(ui.draggable.attr('tagid'));
-                //TODO tell server to tag this product
-            }
+            drop: this.ondropreceive_div.bind(this),
         });
         this.div.on('click', this.onclick_div.bind(this));
 
@@ -182,6 +204,7 @@ class GalleryProductView
         $('#productdetails_img').prop('src','ugc/full/'+ this._model.pid +'/'+this._model.pr_filename);
         DetailsTagView.removeAll();
         //TODO foreach model.tags do new DetailsTagView(tag)
+        //TODO should the clientside models already have relation info or should we fetch it anew here?
         $('#productdetails_geodata').html('(171,64/92,08)'); //TODO use actual data
     }
 
@@ -191,6 +214,32 @@ class GalleryProductView
         //TODO should this only work if the current user has download permissions for the item? -LG
         this.setProductDetailsToThis();
         $('#dialog_productdetails').dialog('open');
+    }
+
+    ondropreceive_div( e, ui )
+    {
+        // tell server to tag this product
+        var fd = new FormData();
+        fd.append('action', 'createproducttag');
+        fd.append('tid', ui.draggable.attr('tagid'));
+        fd.append('pid', this._model.pid);
+        $.ajax({
+            url: 'actions.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            cache: false,
+            dataType: 'json',
+            success: function(response)
+            {
+                //TODO indicate success
+            },
+            error: function(jqxhr, status, exception)
+            {
+                alert(exception);
+            },
+        });
     }
 
     static GetNextObject(id)

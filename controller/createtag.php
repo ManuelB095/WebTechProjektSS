@@ -7,11 +7,6 @@ $input = [
 
 // From former "UserControl": make sure there are no unknown inputs?
 
-if(empty( $input['t_name'] ))
-{
-    return "No tagname received.";
-}
-
 $keys = array_keys($input);
 $db = new DB("INSERT INTO tag(". implode(', ', $keys) .") VALUES(:". implode(', :', $keys) .")", true);
 $db->Execute($input);
