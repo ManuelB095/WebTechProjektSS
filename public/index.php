@@ -6,12 +6,18 @@ require_once('../init.php');
 
 <?php
 include("../subpages/head.php");
-include("../subpages/navBar.php");
+include("../subpages/navBar.php"); //TODO oida de navbar is außerhalb vom body -LG
 
 ?>
 
 <body>
     <div class="container">
+        <div class="row justify-content-center">
+            <div id="flash_msg" class="col-12 alert" style="display: none;">
+                <span id="flash_msg_icon" class="ui-icon"></span>
+                <span id="flash_msg_text"></span>
+            </div>
+        </div>
         <div class="row justify-content-center">
             <main class="col-12">
             <?php

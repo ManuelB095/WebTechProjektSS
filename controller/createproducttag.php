@@ -14,3 +14,4 @@ $db->Execute($input);
 
 //TODO error handling
 
+echo "true";

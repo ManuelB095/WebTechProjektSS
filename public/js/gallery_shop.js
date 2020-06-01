@@ -90,29 +90,17 @@ class DetailsTagView
         if( confirm("Wollen Sie diesen Tag entfernen?") )
         {
             // tell models to disassociate from one another and remove this html
-            let fd = new FormData();
-            fd.append('action', 'deleteproducttag');
-            fd.append('tid', this._model.tid);
-            fd.append('pid', $('#dialog_productdetails').attr('productid'));
-            $.ajax({
-                url: 'actions.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                cache: false,
-                dataType: 'json',
-                success: function(response)
+            AjaxActionAndFlash({
+                'action':'deleteproducttag',
+                'pid':$('#dialog_productdetails').attr('productid'),
+                'tid':this._model.tid,
+            },  function(response)
                 {
-                    //TODO indicate success
+                    FlashSuccess("Tag von Bild enfernt.");
                     //TODO remove this
-                    //TODO is there a clientside copy of the relation that also needs removal?
-                },
-                error: function(jqxhr, status, exception)
-                {
-                    alert(exception);
-                },
-            });
+                    //TODO is there a clientside copy of the relation that
+                }
+            );
         }
     }
 
@@ -219,27 +207,15 @@ class GalleryProductView
     ondropreceive_div( e, ui )
     {
         // tell server to tag this product
-        let fd = new FormData();
-        fd.append('action', 'createproducttag');
-        fd.append('tid', ui.draggable.attr('tagid'));
-        fd.append('pid', this._model.pid);
-        $.ajax({
-            url: 'actions.php',
-            type: 'post',
-            data: fd,
-            contentType: false,
-            processData: false,
-            cache: false,
-            dataType: 'json',
-            success: function(response)
+        AjaxActionAndFlash({
+            'action':'createproducttag',
+            'tid':ui.draggable.attr('tagid'),
+            'pid':this._model.pid,
+        },  function(response)
             {
-                //TODO indicate success
-            },
-            error: function(jqxhr, status, exception)
-            {
-                alert(exception);
-            },
-        });
+                FlashSuccess("Bild getagged!");
+            }
+        );
     }
 
     static GetNextObject(id)
@@ -410,27 +386,16 @@ jQuery(document).ready(function($)
 
     $('#btn_tags_add').on('click', function(e)
     {
-        // tell server to check if #input_new_tag is unique and add it, TODO give clear success/failure message
-        let fd = new FormData();
-        fd.append('t_name', $('#input_new_tag').val() );
-        fd.append('action', 'createtag');
-        $.ajax({
-            url: 'actions.php',
-            type: 'post',
-            data: fd,
-            contentType: false,
-            processData: false,
-            cache: false,
-            dataType: 'json',
-            success: function(response)
+        // tell server to check if #input_new_tag is unique and add it
+        AjaxActionAndFlash({
+            'action':'createtag',
+            't_name':$('#input_new_tag').val(),
+        },  function(response)
             {
+                FlashSuccess("Tag \""+ response.t_name +"\" erfolgreich hinzugefügt!");
                 new SidebarTagView(response);
-            },
-            error: function(jqxhr, status, exception)
-            {
-                alert(exception);
-            },
-        })
+            }
+        );
     });
 
     $('#btn_tags_delete').on('click', function(e)
@@ -469,26 +434,14 @@ jQuery(document).ready(function($)
             {
                 if(regex_filetypes.test(e.originalEvent.dataTransfer.files[i].name))
                 {
-                    let fd = new FormData();
-                    fd.append('productfile', e.originalEvent.dataTransfer.files[i] );
-                    fd.append('action', 'createproduct');
-                    $.ajax({
-                        url: 'actions.php',
-                        type: 'post',
-                        data: fd,
-                        contentType: false,
-                        processData: false,
-                        cache: false,
-                        dataType: 'json',
-                        success: function(response)
+                    AjaxActionAndFlash({
+                        'action':'createproduct',
+                        'productfile':e.originalEvent.dataTransfer.files[i]
+                    },  function(response)
                         {
                             new GalleryProductView(response);
-                        },
-                        error: function(jqxhr, status, exception)
-                        {
-                            alert(exception);
-                        },
-                    })
+                        }
+                    );
                 }
             }
         },
@@ -532,14 +485,16 @@ jQuery(document).ready(function($)
                     },
                     error: function(jqxhr, status, exception)
                     {
-                        alert(exception);
+                        console.log(exception);
+                        console.log(jqxhr);
                     },
                 });
             }
         },
         error: function(jqxhr, status, exception)
         {
-            alert(exception);
+            console.log(exception);
+            console.log(jqxhr);
         },
     });
 
@@ -574,16 +529,17 @@ jQuery(document).ready(function($)
                     },
                     error: function(jqxhr, status, exception)
                     {
-                        alert(exception);
+                        console.log(exception);
+                        console.log(jqxhr);
                     },
                 });
             }
         },
         error: function(jqxhr, status, exception)
         {
-            alert(exception);
+            console.log(exception);
+            console.log(jqxhr);
         },
     });
-
 
 });

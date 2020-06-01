@@ -13,3 +13,4 @@ $db->Execute();
 
 //TODO error handling
 
+echo "true";

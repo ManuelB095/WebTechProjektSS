@@ -31,3 +31,5 @@ foreach( $input as $column => $field )
 $user->SaveChanges();
 
 //TODO error handling
+
+echo "true";
