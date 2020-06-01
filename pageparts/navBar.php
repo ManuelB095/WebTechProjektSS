@@ -36,11 +36,11 @@
                 </a>
             </li>
                 <?php if(empty($_SESSION["username"])) { 
-                  include("../subpages/loginNavigation.php");
+                  include("../pageparts/loginNavigation.php");
                 }
                 else if(!empty($_SESSION["username"]))
                 {
-                  include("../subpages/logoutNavigation.php");
+                  include("../pageparts/logoutNavigation.php");
                 }
                 ?>
             <!--
