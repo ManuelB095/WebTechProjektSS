@@ -30,12 +30,12 @@ class SidebarTagView
 
         this.draggable = $("<span>");
         this.draggable.addClass("sidebar-tag-draggable");
-        this.draggable.attr('tagid',this._model.value); //TODO can this be fancier? -LG
+        this.draggable.attr('tagid',this._model.tid); //TODO can this be fancier? -LG
         this.draggable.draggable({
             revert: "invalid",
             helper: "clone"
         });
-        this.draggable.html( this._model.value );
+        this.draggable.html( this._model.t_name );
         this.div.append( this.draggable );
 
         $('#taglist').append(this.div);
@@ -80,7 +80,7 @@ class DetailsTagView
 
         this.div = $('<div>');
         this.div.prop('tagid',this._tagid);
-        this.div.html( this._model.value );
+        this.div.html( this._model.t_name );
         this.div.on('click', this.onclick_div.bind(this));
 
         $('#productdetails_taglist').append(this.div);
@@ -361,7 +361,27 @@ jQuery(document).ready(function($)
 
     $('#btn_tags_add').on('click', function(e)
     {
-        //TODO tell server to check if #input_new_tag is unique and add it, give clear success/failure message
+        // tell server to check if #input_new_tag is unique and add it, TODO give clear success/failure message
+        let fd = new FormData();
+        fd.append('tagname', $('#input_new_tag').val() );
+        fd.append('action', 'createtag');
+        $.ajax({
+            url: 'actions.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            cache: false,
+            dataType: 'json',
+            success: function(response)
+            {
+                new SidebarTagView(response);
+            },
+            error: function(jqxhr, status, exception)
+            {
+                alert(exception);
+            },
+        })
     });
 
     $('#btn_tags_delete').on('click', function(e)
@@ -474,10 +494,47 @@ jQuery(document).ready(function($)
         },
     });
 
+    var fd = new FormData();
+    fd.append('action', 'indextag');
+    $.ajax({
+        url: 'actions.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        cache: false,
+        dataType: 'json',
+        success: function(response)
+        {
+            for(var i = 0; i < response.length; ++i)
+            {
+                var fd = new FormData();
+                fd.append('action', 'gettag');
+                fd.append('tid', response[i]);
+                $.ajax({
+                    url: 'actions.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    dataType: 'json',
+                    success: function(response)
+                    {
+                        new SidebarTagView(response);
+                    },
+                    error: function(jqxhr, status, exception)
+                    {
+                        alert(exception);
+                    },
+                });
+            }
+        },
+        error: function(jqxhr, status, exception)
+        {
+            alert(exception);
+        },
+    });
 
-    /* dummies for UI tests */
-    new SidebarTagView( {'id':1,'value':'Österreich'} );
-    new SidebarTagView( {'id':2,'value':'Wien'} );
-    new SidebarTagView( {'id':3,'value':'Semmering'} );
 
 });
