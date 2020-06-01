@@ -7,6 +7,8 @@ RewriteEngine On
 # Nur wenn nicht eine existierende Datei gefordert wird
 RewriteCond %{REQUEST_FILENAME} !-f
 
+# Der RSS Link ist speziell
+RewriteRule ^rss$ rss.php [NC,QSA,L]
+
 # website.com/soundso ist eigentlich website.com?subpage=soundso
 RewriteRule ^([^\.\?\/]+)$ index.php?subpage=$1 [NC,QSA,L]
-

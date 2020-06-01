@@ -21,9 +21,9 @@
                     }?>
                 </a>
             </li>
-            <li class="nav-item <?php if ($_GET['subpage'] == "rss") {?>active<?php }?>">
-                <a class="nav-link" href="rss">RSS Feed<?php
-                    if (isset($_GET['subpage']) && $_GET['subpage'] === "rss") {
+            <li class="nav-item <?php if ($_GET['subpage'] == "news") {?>active<?php }?>">
+                <a class="nav-link" href="news">RSS Feed<?php
+                    if (isset($_GET['subpage']) && $_GET['subpage'] === "news") {
                       ?><span class="sr-only"> (current)</span><?php
                     }?>
                 </a>
