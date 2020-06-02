@@ -58,6 +58,36 @@ class SidebarTagView
         this._all = [];
     }
 
+    static remove(tid)
+    {
+        for(let i = this._all.length -1; i >= 0; --i)
+        {
+            if( this._all[i]._model.tid == tid )
+            {
+                //destroy DOM
+                this._all[i].div.remove()
+                //unregister this
+                delete this._all[i];
+                this._all.splice(i, 1);
+
+                return true;
+            }
+        }
+    }
+
+    static getAllCheckedID()
+    {
+        let checked = [];
+        for(let i = 0; i < this._all.length; ++i)
+        {
+            if( this._all[i].check.prop('checked') )
+            {
+                checked.push( this._all[i]._model.tid );
+            }
+        }
+        return checked;
+    }
+
 }
 
 
@@ -394,13 +424,43 @@ jQuery(document).ready(function($)
             {
                 FlashSuccess("Tag \""+ response.t_name +"\" erfolgreich hinzugefügt!");
                 new SidebarTagView(response);
+                $('#input_new_tag').val("");
             }
         );
     });
 
     $('#btn_tags_delete').on('click', function(e)
     {
-        //TODO tell server to delete checked tags, remove based on response (or simply refresh all), give clear success message (including number of actually deleted tags?)
+        // tell server to delete checked tags, remove based on response (or simply refresh all), give clear success message (including number of actually deleted tags?)
+        let targets = SidebarTagView.getAllCheckedID();
+        AjaxActionAndFlash({
+            'action':'deletetag',
+            'tid':JSON.stringify(targets),
+        },  function(response)
+            {
+                // notification
+                if( response.length == 0 )
+                {
+                    FlashSuccess( targets.length +" Tags erfolgreich gelöscht." );
+                }
+                else if( response.length < targets.length )
+                {
+                    FlashWarning( response.length +" Tags konnten nicht gelöscht werden:<br>"+ response.join("<br>") );
+                }
+                else
+                {
+                    FlashError( "Die Tags konnten nicht gelöscht werden:<br>"+ response.join("<br>") );
+                }
+                // remove SidebarTagViews
+                for(let i = 0; i < targets.length; ++i)
+                {
+                    if( !response[i] )
+                    {
+                        SidebarTagView.remove(targets[i])
+                    }
+                }
+            }
+        );
     });
 
     /*
