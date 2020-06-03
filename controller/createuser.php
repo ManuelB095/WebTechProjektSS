@@ -27,4 +27,14 @@ $keys = array_keys($input);
 $db = new DB("INSERT INTO users(". implode(', ', $keys) .") VALUES(:". implode(', :', $keys) .")");
 $db->Execute($input);
 
+
+// populate $_SESSION as needed if not logged in yet
+if(empty( $_SESSION['username'] ))
+{
+    foreach( User::$publicFields as $field )
+    {
+        $_SESSION[$field] = $user->$field;
+    }
+}
+
 //TODO error handling
