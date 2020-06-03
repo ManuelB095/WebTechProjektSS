@@ -30,5 +30,6 @@ if( !empty($input) && gettype($input) == 'array' )
 else
 {
     echo "No tags selected.";
+    return;
 }
 

@@ -17,7 +17,8 @@ $input = [
 
 if(empty( $input['username'] ))
 {
-    return "No username received.";
+    echo "No username received.";
+    return;
 }
 
 //password_verify($hashedPW, $PWfromDB); // Verify that typed password/Username Combination is the same as the ( hashed one in the database )

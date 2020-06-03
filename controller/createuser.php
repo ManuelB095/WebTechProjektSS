@@ -17,7 +17,8 @@ $input = [
 
 if(empty( $input['username'] ) || empty( $input['password'] ))
 {
-    return "No username or password received.";
+    echo "No username or password received.";
+    return;
 }
 
 // hash password

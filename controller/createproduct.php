@@ -6,10 +6,10 @@
 |------------------------------------------------
 */
 
-// Only if logged in TODO
 if(empty( $_SESSION['username'] ))
 {
-    //return "Not logged in.";
+    echo "Not logged in.";
+    return;
 }
 
 // From former "UserControl": make sure there are no unknown inputs?
@@ -17,28 +17,32 @@ if(empty( $_SESSION['username'] ))
 // Has anything been received?
 if(empty( $_FILES['productfile'] ))
 {
-    return "No file received.";
+    echo "No file received.";
+    return;
 }
 $file = $_FILES['productfile'];
 
 // Did PHP notice any errors?
 if ($file["error"] !== UPLOAD_ERR_OK)
 {
-    return "Upload failed (code {$file["error"]}).";
+    echo "Upload failed (code {$file["error"]}).";
+    return;
 }
 
 // Is the file empty?
 if(empty( $file['name'] ) || empty( $file['size'] ) || $file["size"] < 12 )
 {
     // 12 bytes are necessary for the magic number, else the file is definitely useless.
-    return "File is empty.";
+    echo "File is empty.";
+    return;
 }
 $sourcefilename = filter_var($file["name"], FILTER_SANITIZE_STRING);
 
 // Is the file too large? (20MB is plenty, right?)
 if ($file["size"] > 20000000)
 {
-    return "File is too large. Try saving as JPG or reducing resolution.";
+    echo "File is too large. Try saving as JPG or reducing resolution.";
+    return;
 }
 
 // Get magic number
@@ -55,6 +59,7 @@ const imageTypes = [
 // Is the file a valid image (TODO compare to blueimp for this?)
 if(empty( preg_match("/.*\.(jpg|jpeg|png|gif|webp|bmp)$/i", $sourcefilename) ) || empty( imageTypes[$file_info[2]] ))
 {
+    echo "File is not a recognised image format (jpg, png, gif, webp)."
     return;
 }
 
@@ -113,7 +118,8 @@ if( move_uploaded_file($file["tmp_name"], "ugc/full/$pid/$sourcefilename") )
 }
 else // should never happen
 {
-    return "File could not be stored in the UGC folder. System administrator, please stop messing with the read/write/execute permissions.";
+    echo "File could not be stored in the UGC folder. System administrator, please stop messing with the read/write/execute permissions.";
+    return;
 }
 
 $db->commit();
