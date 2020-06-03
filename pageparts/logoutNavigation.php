@@ -1,11 +1,8 @@
 <li class="nav-item">
-    <a class="nav-link disabled" href=""><?php echo $_SESSION["firstname"];?></a>
+    <a class="nav-link disabled" href=""><?php echo $_SESSION["firstname"], " ", $_SESSION["lastname"];?></a>
 </li>
 <li class="nav-item">
-    <a class="nav-link disabled" href=""><?php echo $_SESSION["lastname"];?></a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="./php/logoutUser.php">Logout</a>
+    <a class="nav-link" id="btn_logout">Logout</a>
 </li>
 <li class="nav-item <?php if ($_GET['subpage'] == "edit") {?>active<?php }?>">
     <a class="nav-link" href="edit"><i class="fas fa-wrench"></i><?php

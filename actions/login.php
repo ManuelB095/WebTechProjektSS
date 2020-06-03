@@ -4,9 +4,10 @@
 $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
 $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
 
-if(empty( $input['username'] ) || empty( $input['password'] ))
+if(empty( $username ) || empty( $password ))
 {
-    return "No username or password received.";
+    echo "No username or password received.";
+    return;
 }
 
 
@@ -15,7 +16,8 @@ if( $user->exists && password_verify( $password, $user->password ) )
 {
     if( !$user->is_active )
     {
-        return "This account has been deactivated.";
+        echo "This account has been deactivated.";
+        return;
     }
 
     if(password_needs_rehash( $user->password, PASSWORD_DEFAULT ))
@@ -25,7 +27,7 @@ if( $user->exists && password_verify( $password, $user->password ) )
     }
 
     // populate $_SESSION as needed if successfully logged in
-    foreach( User::$publicFields as $field )
+    foreach( User::publicFields as $field )
     {
         $_SESSION[$field] = $user->$field;
     }
@@ -34,6 +36,6 @@ if( $user->exists && password_verify( $password, $user->password ) )
 }
 else
 {
-    return "Password or username incorrect";
+    echo "Password or username incorrect";
 }
 

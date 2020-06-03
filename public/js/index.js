@@ -129,5 +129,45 @@ jQuery(document).ready(function($)
             },
         },*/
     });
+    
+    /*
+    |------------------------------------------------
+    | Login Handling
+    |------------------------------------------------
+    */
+
+    let btn_login = $('#btn_login');
+    if( btn_login )
+    {
+        btn_login.on('click', function(e)
+        {
+            // tell server to login, reload page if successful
+            AjaxActionAndFlash({
+                'action':'login',
+                'username':$('#login_username').val(),
+                'password':$('#login_password').val(),
+            },  function(response)
+                {
+                    location.reload();
+                }
+            );
+        });
+    }
+
+    let btn_logout = $('#btn_logout');
+    if( btn_logout )
+    {
+        btn_logout.on('click', function(e)
+        {
+            // tell server to logout, reload page if successful
+            AjaxActionAndFlash({
+                'action':'logout',
+            },  function(response)
+                {
+                    location.reload();
+                }
+            );
+        });
+    }
 
 });
