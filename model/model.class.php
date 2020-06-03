@@ -31,6 +31,7 @@ class Model
 
     function __get($field)
     {
+        if( $field == 'exists' ) return $this->exists;
         return $this->fields[$field];
     }
 

@@ -22,6 +22,9 @@ if(empty( $input['username'] ))
 
 //password_verify($hashedPW, $PWfromDB); // Verify that typed password/Username Combination is the same as the ( hashed one in the database )
 
+// hash password
+$input['password'] = password_hash($input['password'], PASSWORD_DEFAULT); // returns 60 digit of hex chars
+
 // insert into model and save changes
 $user = new User($username);
 foreach( $input as $column => $field )
