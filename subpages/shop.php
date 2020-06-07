@@ -1,8 +1,16 @@
 <h1>Galerie</h1>
+<?php
+// only if logged in
+if(!empty( $_SESSION['username'] ))
+{
+?>
 <button id="btn_delete"><span class="ui-icon ui-icon-trash"></span>Gewählte löschen</button>
 <button id="btn_download"><span class="ui-icon ui-icon-arrowthickstop-1-s"></span>Gewählte herunterladen</button>
 <button id="btn_addcart"><span class="ui-icon ui-icon-cart"></span>Gewählte in Warenkorb</button>
-<button id="btn_showcart"><span class="ui-icon ui-icon-newwin"></span>Zeige Warenkorb</button> <!-- JQuery UI has an icon class for a shopping cart symbol -->
+<button id="btn_showcart"><span class="ui-icon ui-icon-newwin"></span>Zeige Warenkorb</button>
+<?php
+}
+?>
 <div id="gallery_root" class="gallery-root">
     <section id="gallery_list" class="gallery-list <?php if(!empty( $_SESSION['username'] )) echo "upload-area"; ?>">
         <!-- populated by JS -->
@@ -22,9 +30,17 @@
             <option value="user_desc">Nach Uploader (Z-A)</option>
         </select>
         <hr>
+<?php
+// only if logged in
+if(!empty( $_SESSION['username'] ))
+{
+?>
         <button id="btn_tags_delete"><span class="ui-icon ui-icon-trash"></span>Gewählte Tags löschen</button>
         <input id="input_new_tag" type="text" placeholder="Neuer Tag..." />
         <button id="btn_tags_add"><span class="ui-icon ui-icon-plus"></span>Tag hinzufügen</button>
+<?php
+}
+?>
         <div id="taglist" class="sidebar-taglist">
             <!-- populated by JS -->
         </div>
@@ -41,6 +57,11 @@
     <p>Geodaten: € <span id="productdetails_geodata"></span></p>
     <button id="btn_productdetails_download">Herunterladen</button> <!--TODO-->
 </div>
+<?php
+// only if logged in
+if(!empty( $_SESSION['username'] ))
+{
+?>
 <div id="dialog_shopcart" title="Warenkorb">
     <div id="shopcart_list">
         <!-- populated by JS -->
@@ -48,5 +69,8 @@
     <p>Gesamtpreis: € <span id="shopcart_total"></span></p>
     <p>Lieferadresse:<br><?php echo $_SESSION['address']; ?><br><?php echo $_SESSION['plz']; ?> <?php echo $_SESSION['location']; ?></p>
 </div>
+<?php
+}
+?>
 
 <script src="js/gallery_shop.js"></script>

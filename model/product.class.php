@@ -28,9 +28,29 @@ class Product extends Model
     |------------------------------------------------
     */
 
-    protected function extendPreJSON($obj)
+    protected function IsBoughtBy($username)
     {
-        $obj['access'] = 1; //TODO get access privileges of logged in user
+        if(empty( $username )) { return false; }
+
+        $db = new DB('SELECT COUNT(*) FROM userboughtproduct WHERE b_username = :username AND b_pid = :pid');
+        $count = $db->Fetch([
+            'username' => $username,
+            'pid' => $this->pid,
+        ]);
+
+        return !empty($count);
+    }
+
+    protected function extendPreJSON(&$obj)
+    {
+        if(empty( $_SESSION['username'] ))
+            { $obj['access'] = 0; }
+        elseif( $_SESSION['username'] == $this->pr_owner )
+            { $obj['access'] = 2; }
+        elseif( $this->IsBoughtBy($_SESSION['username']) )
+            { $obj['access'] = 1; }
+        else
+            { $obj['access'] = 0; }
     }
 
 }

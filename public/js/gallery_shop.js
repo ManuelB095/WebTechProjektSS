@@ -283,6 +283,43 @@ class GalleryProductView
         }
         this._all = [];
     }
+
+    static SetBought(pid)
+    {
+        for(let i = this._all.length -1; i >= 0; --i)
+        {
+            if( this._all[i]._model.pid == pid )
+            {
+                if( this._model.access == 0 )
+                {
+                    this._model.access = 1
+
+                    this.ownerbadge = $('<span>');
+                    this.ownerbadge.addClass('ui-icon');
+                    this.ownerbadge.addClass('ui-icon-person');
+                    this.ownerbadge.addClass('badge-bg-yellow');
+                    this.ownerbadge.prop('title','erworben');
+
+                    this.img.after( this.ownerbadge );
+                }
+
+                return true;
+            }
+        }
+    }
+
+    static getAllCheckedID()
+    {
+        let checked = [];
+        for(let i = 0; i < this._all.length; ++i)
+        {
+            if( this._all[i].check.prop('checked') )
+            {
+                checked.push( this._all[i]._model.pid );
+            }
+        }
+        return checked;
+    }
 }
 
 
@@ -322,7 +359,46 @@ class ShopcartProductView
 
     onclick_uncart(e)
     {
-        //TODO tell server to uncart this, refresh based on response (and maybe give subtle success confirmation, e.g. fadeout using JQuery UI)
+        // tell server to uncart this, refresh based on response (and maybe give subtle success confirmation, e.g. fadeout using JQuery UI)
+        AjaxActionAndFlash({
+            'action':'deleteshopcart',
+            'pid':this._model.pid,
+        }, this.remove.bind(this) );
+    }
+
+    removeFade()
+    {
+        this.div.hide( 'blind', {}, 300, this.remove.bind(this) );
+    }
+
+    remove()
+    {
+        for(let i = ShopcartProductView._all.length -1; i >= 0; --i)
+        {
+            //destroy DOM
+            this.div.remove()
+            //unregister this
+            ShopcartProductView._all.splice(i, 1);
+            delete this;
+            return true;
+        }
+    }
+
+    static remove(pid)
+    {
+        for(let i = this._all.length -1; i >= 0; --i)
+        {
+            if( this._all[i]._model.pid == pid )
+            {
+                //destroy DOM
+                this._all[i].div.remove()
+                //unregister this
+                delete this._all[i];
+                this._all.splice(i, 1);
+
+                return true;
+            }
+        }
     }
 
     static removeAll()
@@ -335,6 +411,16 @@ class ShopcartProductView
             delete this._all[i];
         }
         this._all = [];
+    }
+
+    static GetIDs()
+    {
+        let ids = [];
+        for(let i = this._all.length -1; i >= 0; --i)
+        {
+            ids.push( this._all[i]._model.pid );
+        }
+        return ids;
     }
 }
 
@@ -359,7 +445,38 @@ jQuery(document).ready(function($)
         //modal: true,
         buttons: {
             'Bestellen': function() {
-                //TODO this should close the dialog and tell the server to checkout, then refresh affected items in the main list based on response
+                // this should close the dialog and tell the server to checkout, then refresh affected items in the main list based on response
+                $('#dialog_shopcart').dialog('close');
+                AjaxActionAndFlash({
+                    'action':'checkout',
+                },  function(response)
+                    {
+                        let targets = ShopcartProductView.GetIDs();
+                        // notification
+                        if( response.length == 0 )
+                        {
+                            FlashSuccess( targets.length +" Bilder erfolgreich bestellt." );
+                        }
+                        else if( response.length < targets.length )
+                        {
+                            FlashWarning( response.length +" Bilder konnten nicht bestellt werden:<br>"+ response.join("<br>") );
+                        }
+                        else
+                        {
+                            FlashError( "Die Bilder konnten nicht bestellt werden:<br>"+ response.join("<br>") );
+                        }
+                        // refresh main list (badges in particular)
+                        // clear shopcart (of purchased products only?)
+                        for(let i = 0; i < targets.length; ++i)
+                        {
+                            if( !response[i] )
+                            {
+                                GalleryProductView.SetBought( targets[i] );
+                            }
+                            ShopcartProductView.remove( targets[i] );
+                        }
+                    }
+                );
             },
             //'Leeren': ,
         },
@@ -406,7 +523,37 @@ jQuery(document).ready(function($)
 
     $('#btn_addcart').on('click', function(e)
     {
-        //TODO tell server to add these to the cart, give clear success message (including number of actually added items?), update #shopcart_list if it exists
+        // tell server to add these to the cart, give clear success message (including number of actually added items?), update #shopcart_list if it exists
+        let targets = GalleryProductView.getAllCheckedID();
+        AjaxActionAndFlash({
+            'action':'createshopcart',
+            'pid':JSON.stringify(targets),
+        },  function(response)
+            {
+                // notification
+                if( response.length == 0 )
+                {
+                    FlashSuccess( targets.length +" Bilder erfolgreich eingeladen." );
+                }
+                else if( response.length < targets.length )
+                {
+                    FlashWarning( response.length +" Bilder konnten nicht eingeladen werden:<br>"+ response.join("<br>") );
+                }
+                else
+                {
+                    FlashError( "Die Bilder konnten nicht eingeladen werden:<br>"+ response.join("<br>") );
+                }
+                // remove SidebarTagViews
+                for(let i = 0; i < targets.length; ++i)
+                {
+                    if( !response[i] )
+                    {
+                        //TODO get model
+                        //new ShopcartProductView( ._model );
+                    }
+                }
+            }
+        );
     });
 
     $('#btn_showcart').on('click', function(e)
@@ -513,7 +660,29 @@ jQuery(document).ready(function($)
     |------------------------------------------------
     */
 
+    let shopcarted = [];
     let fd = new FormData();
+    fd.append('action', 'indexshopcart');
+    $.ajax({
+        url: 'actions.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        cache: false,
+        dataType: 'json',
+        success: function(response)
+        {
+            shopcarted = response;
+        },
+        error: function(jqxhr, status, exception)
+        {
+            console.log(exception);
+            console.log(jqxhr);
+        },
+    });
+
+    fd = new FormData();
     fd.append('action', 'indexproduct');
     $.ajax({
         url: 'actions.php',
@@ -540,8 +709,9 @@ jQuery(document).ready(function($)
                     dataType: 'json',
                     success: function(response)
                     {
-                        //new ShopcartProductView(response);
                         new GalleryProductView(response);
+                        if( shopcarted.indexOf(response.pid) != -1 )
+                            new ShopcartProductView(response);
                     },
                     error: function(jqxhr, status, exception)
                     {

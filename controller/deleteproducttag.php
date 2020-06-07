@@ -1,5 +1,12 @@
 <?php
 
+// only if logged in
+if(empty( $_SESSION['username'] ))
+{
+    echo "Not logged in.";
+    return;
+}
+
 // retrieve sanitised inputs
 $input = [
     'tid' => filter_input(INPUT_POST, 'tid', FILTER_SANITIZE_NUMBER_INT),
