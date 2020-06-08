@@ -176,9 +176,11 @@ class GalleryProductView
 
         this.img = $("<img>");
         this.img.prop('src', 'ugc/thumb/'+ this._model.pid +'.jpg');
+        this.img.addClass('gallery-product-draggable');
         this.img.draggable({
-            revert: true
+            revert: true,
         });
+        this.img.attr('pid',this._model.pid); //TODO can this be fancier? -LG
         this.div.append( this.img );
 
         if( this._model.access > 0 )
@@ -616,6 +618,22 @@ jQuery(document).ready(function($)
     $('#btn_showcart').on('click', function(e)
     {
         $('#dialog_shopcart').dialog('open');
+    });
+
+    $('#btn_showcart, #btn_addcart').droppable({
+        accept: ".gallery-product-draggable",
+        drop: function(e, ui)
+        {
+            AjaxActionAndFlash({
+                'action':'createshopcart',
+                'pid':ui.draggable.attr('pid'),
+            },  function(response)
+                {
+                    FlashSuccess("Bild eingeladen!");
+                    GalleryProductView.CopyToShopcart( ui.draggable.attr('pid') );
+                }
+            );
+        }
     });
 
     $('#btn_tags_add').on('click', function(e)
