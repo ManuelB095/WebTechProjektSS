@@ -628,6 +628,7 @@ jQuery(document).ready(function($)
         },
         drop: function(e)
         {
+            if(!e.originalEvent.dataTransfer) return;
             // Nochmal: Bitte die Datei nicht im Browser öffnen
             e.stopPropagation();
             e.preventDefault();
