@@ -59,7 +59,7 @@ const imageTypes = [
 // Is the file a valid image (TODO compare to blueimp for this?)
 if(empty( preg_match("/.*\.(jpg|jpeg|png|gif|webp|bmp)$/i", $sourcefilename) ) || empty( imageTypes[$file_info[2]] ))
 {
-    echo "File is not a recognised image format (jpg, png, gif, webp)."
+    echo "File is not a recognised image format (jpg, png, gif, webp).";
     return;
 }
 
@@ -70,7 +70,7 @@ if(empty( preg_match("/.*\.(jpg|jpeg|png|gif|webp|bmp)$/i", $sourcefilename) ) |
 */
 
 $input = [
-    'pr_owner' => 'asdf', //TODO current user
+    'pr_owner' => $_SESSION['username'],
     'pr_filename' => $sourcefilename,
     'pr_exif' => '', //TODO geo data
     'pr_upload_date' => date('Y-m-d H:i:s'),

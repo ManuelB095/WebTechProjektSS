@@ -284,6 +284,35 @@ class GalleryProductView
         this._all = [];
     }
 
+    static remove(pid)
+    {
+        for(let i = this._all.length -1; i >= 0; --i)
+        {
+            if( this._all[i]._model.pid == pid )
+            {
+                //destroy DOM
+                this._all[i].div.remove()
+                //unregister this
+                delete this._all[i];
+                this._all.splice(i, 1);
+
+                return true;
+            }
+        }
+    }
+
+    static CopyToShopcart(pid)
+    {
+        for(let i = this._all.length -1; i >= 0; --i)
+        {
+            if( this._all[i]._model.pid == pid )
+            {
+                new ShopcartProductView( this._all[i]._model );
+                return true;
+            }
+        }
+    }
+
     static SetBought(pid)
     {
         for(let i = this._all.length -1; i >= 0; --i)
@@ -513,7 +542,36 @@ jQuery(document).ready(function($)
 
     $('#btn_delete').on('click', function(e)
     {
-        //TODO send delete requests to server via AJAX, remove based on response (or simply refresh all), give clear success message (including number of actually deleted items?)
+        // send delete requests to server via AJAX, remove based on response (or simply refresh all), give clear success message (including number of actually deleted items?)
+        let targets = GalleryProductView.getAllCheckedID();
+        AjaxActionAndFlash({
+            'action':'deleteproduct',
+            'pid':JSON.stringify(targets),
+        },  function(response)
+            {
+                // notification
+                if( response.length == 0 )
+                {
+                    FlashSuccess( targets.length +" Bilder erfolgreich gelöscht." );
+                }
+                else if( response.length < targets.length )
+                {
+                    FlashWarning( response.length +" Bilder konnten nicht gelöscht werden:<br>"+ response.join("<br>") );
+                }
+                else
+                {
+                    FlashError( "Die Bilder konnten nicht gelöscht werden:<br>"+ response.join("<br>") );
+                }
+                // remove GalleryProductView (and ShopcartProductView)
+                for(let i = 0; i < targets.length; ++i)
+                {
+                    if( !response[i] )
+                    {
+                        GalleryProductView.remove( targets[i] );
+                    }
+                }
+            }
+        );
     });
 
     $('#btn_download').on('click', function(e)
@@ -548,8 +606,7 @@ jQuery(document).ready(function($)
                 {
                     if( !response[i] )
                     {
-                        //TODO get model
-                        //new ShopcartProductView( ._model );
+                        GalleryProductView.CopyToShopcart( targets[i] );
                     }
                 }
             }
