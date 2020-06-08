@@ -24,18 +24,16 @@ if(empty( $input['username'] ) || empty( $input['password'] ))
 // hash password
 $input['password'] = password_hash($input['password'], PASSWORD_DEFAULT); // returns 60 digit of hex chars
 
-$keys = array_keys($input);
+/*$keys = array_keys($input);
 $db = new DB("INSERT INTO users(". implode(', ', $keys) .") VALUES(:". implode(', :', $keys) .")");
 $db->Execute($input);
-
-
-// populate $_SESSION as needed if not logged in yet
+*/
 if(empty( $_SESSION['username'] ))
 {
-    foreach( User::$publicFields as $field )
-    {
-        $_SESSION[$field] = $user->$field;
-    }
+    $user = new User( $input['username'] );
+    $user->LogIn();
 }
+
+echo "true";
 
 //TODO error handling

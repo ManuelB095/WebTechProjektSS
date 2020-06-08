@@ -28,4 +28,16 @@ class User extends Model
     |------------------------------------------------
     */
 
+    function LogIn()
+    {
+        // populate $_SESSION as needed if not logged in yet
+        if( $this->exists )
+        {
+            foreach( self::publicFields as $field )
+            {
+                $_SESSION[$field] = $this->fields[ $field ];
+            }
+        }
+    }
+
 }

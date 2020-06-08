@@ -12,12 +12,7 @@
                         <input class="form-control" type="password" id="login_password" placeholder="Password" required/>
                     </div>
                     <button id="btn_login" class="btn btn-warning">Login</button>
-                    <!-- BIG TO DO : SET UP Registry Link via GET -->
-                    <a class="px-2 pt-2" href="register">Register<?php
-                    if (isset($_GET['subpage']) && $_GET['subpage'] === "register") {
-                      ?><span class="sr-only"> (current)</span><?php
-                    }?>
-                </a>
+                    <button id="btn_register">Register</a>
                 </div>
              </li>
 <!-- <script src="./js/loginUtilities.js"></script> -->

@@ -70,7 +70,11 @@ function AjaxActionAndFlash(data, onsuccess)
     $('#flash_msg').hide( 'fade', {}, 200 );
 
     let fd;
-    if( data != null )
+    if( data instanceof FormData )
+    {
+        fd = data;
+    }
+    else if( data != null )
     {
         fd = new FormData();
         for( let key in data )
@@ -113,21 +117,71 @@ jQuery(document).ready(function($)
     $('#dialog_register').dialog({
         autoOpen: false,
         modal: true,
-        /*buttons: {
-            'Registrieren': function() {
-                
+        buttons: {
+            'Registrieren': function()
+            {
+                if( $('#register_password').val() != $('#register_password_repeat').val() )
+                {
+                    return;
+                }
+
+                // tell server to register, reload page if successful
+                let fd = new FormData( $('#dialog_register').find('form')[0] );
+                fd.append('action','createuser');
+                AjaxActionAndFlash(fd, function(response)
+                    {
+                        location.reload();
+                    }
+                );
             },
-        },*/
+        },
     });
 
     $('#dialog_login').dialog({
         autoOpen: false,
         modal: true,
         /*buttons: {
-            'Anmelden': function() {
+            'Anmelden': function()
+            {
                 
             },
         },*/
+    });
+
+    $('#dialog_profile').dialog({
+        autoOpen: false,
+        modal: true,
+        buttons: {
+            'Profil Ändern': function()
+            {
+                // tell server to logout, reload page if successful
+                let fd = new FormData( $('#dialog_profile').find('form')[0] );
+                fd.append('action','edituser');
+                AjaxActionAndFlash(fd, function(response)
+                    {
+                        location.reload();
+                    }
+                );
+            },
+        },
+    });
+
+    /*
+    |------------------------------------------------
+    | Form Validation
+    |------------------------------------------------
+    */
+
+    $('#register_password, #register_password_repeat').on('change', function()
+    {
+        if( $('#register_password').val() == $('#register_password_repeat').val() )
+        {
+            $('#register_password_repeat').css('color', 'inherit');
+        }
+        else
+        {
+            $('#register_password_repeat').css('color', 'red');
+        }
     });
     
     /*
@@ -167,6 +221,39 @@ jQuery(document).ready(function($)
                     location.reload();
                 }
             );
+        });
+    }
+
+    let btn_profile = $('#btn_profile');
+    if( btn_profile )
+    {
+        btn_profile.on('click', function(e)
+        {
+            // ask server who we are
+            AjaxActionAndFlash({
+                'action':'getuser',
+            },  function(response)
+                {
+                    $('#profile_username').val( response.username );
+                    $('#profile_email').val( response.email );
+                    $('#profile_salutation').val( response.title );
+                    $('#profile_firstname').val( response.firstname );
+                    $('#profile_lastname').val( response.lastname );
+                    $('#profile_address').val( response.address );
+                    $('#profile_town').val( response.location );
+                    $('#profile_postcode').val( response.plz );
+                    $('#dialog_profile').dialog('open');
+                }
+            );
+        });
+    }
+
+    let btn_register = $('#btn_register');
+    if( btn_register )
+    {
+        btn_register.on('click', function(e)
+        {
+            $('#dialog_register').dialog('open');
         });
     }
 

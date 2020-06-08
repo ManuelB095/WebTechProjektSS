@@ -28,6 +28,7 @@
                     }?>
                 </a>
             </li>
+            <?php if(!empty($_SESSION["is_admin"])) { ?>
             <li class="nav-item <?php if ($_GET['subpage'] == "admin") {?>active<?php }?>">
                 <a class="nav-link" href="admin">Administration<?php
                     if (isset($_GET['subpage']) && $_GET['subpage'] === "admin") {
@@ -35,6 +36,7 @@
                     }?>
                 </a>
             </li>
+            <?php } ?>
                 <?php if(empty($_SESSION["username"])) { 
                   include("../pageparts/loginNavigation.php");
                 }
