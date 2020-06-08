@@ -83,6 +83,18 @@ CREATE TABLE `shoppingcart` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `userboughtproduct`
+--
+
+DROP TABLE IF EXISTS `userboughtproduct`;
+CREATE TABLE `userboughtproduct` (
+  `b_username` varchar(32) NOT NULL,
+  `b_pid` varchar(32) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tags`
 --
 
@@ -152,6 +164,12 @@ ALTER TABLE `producttags`
 --
 ALTER TABLE `shoppingcart`
   ADD PRIMARY KEY (`w_username`);
+
+--
+-- Indexes for table `userboughtproduct`
+--
+ALTER TABLE `userboughtproduct`
+  ADD PRIMARY KEY (`b_username`);
 
 --
 -- Indexes for table `tags`
