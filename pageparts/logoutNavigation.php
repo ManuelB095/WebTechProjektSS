@@ -1,5 +1,5 @@
 <li class="nav-item">
-    <a class="nav-link disabled" href=""><?php echo $_SESSION["firstname"], " ", $_SESSION["lastname"];?></a>
+    <a id="btn_profile" class="nav-link"><?php echo $_SESSION["firstname"], " ", $_SESSION["lastname"];?></a>
 </li>
 <li class="nav-item">
     <a class="nav-link" id="btn_logout">Logout</a>

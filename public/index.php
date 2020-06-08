@@ -72,19 +72,19 @@ else
     <div id="dialog_profile" title="Profil">
         <form method="post">
             <input id="profile_username" name="username" type="text" required placeholder="Nutzername" readonly />
-            <input id="profile_email" name="email" type="email" required placeholder="email@beispiel.de" />
-            <input id="profile_password_new" name="password" type="password" required placeholder="Neues Passwort" />
+            <input id="profile_email" name="email" type="email" placeholder="email@beispiel.de" />
+            <input id="profile_password_new" name="password" type="password" placeholder="Neues Passwort" />
             <input id="profile_password_old" name="password_old" type="password" required placeholder="Altes Passwort bestätigen" />
-            <select id="profile_salutation" name="title" required>
+            <select id="profile_salutation" name="title">
                 <option value="">Keine Anrede</option>
                 <option value="Herr">Herr</option>
                 <option value="Frau">Frau</option>
             </select>
-            <input id="profile_firstname" name="firstname" type="text" required placeholder="Vorname" />
-            <input id="profile_lastname" name="lastname" type="text" required placeholder="Nachname" />
-            <input id="profile_address" name="address" type="text" required placeholder="Adresse" />
-            <input id="profile_town" name="location" type="text" required placeholder="Ortschaft" />
-            <input id="profile_postcode" name="plz" type="text" required placeholder="PLZ" />
+            <input id="profile_firstname" name="firstname" type="text" placeholder="Vorname" />
+            <input id="profile_lastname" name="lastname" type="text" placeholder="Nachname" />
+            <input id="profile_address" name="address" type="text" placeholder="Adresse" />
+            <input id="profile_town" name="location" type="text" placeholder="Ortschaft" />
+            <input id="profile_postcode" name="plz" type="text" placeholder="PLZ" />
             <!-- button id="btn_updateprofile" type="submit">Profil Ändern</button -->
         </form>
     </div>

@@ -84,19 +84,28 @@ class Model
         return TRUE;
     }
 
-    protected function SaveChanges()
+    public function SaveChanges()
     {
         $sql = "UPDATE {$this->table} SET ";
+        $stupidcommabool = true;
         foreach($this->fields as $column => $field)
         {
             if( $column != $this->primary_key_column )
             {
+                if( $stupidcommabool )
+                {
+                    $stupidcommabool = false;
+                }
+                else
+                {
+                    $sql .= ", ";
+                }
                 $sql .= "$column = :$column ";
             }
         }
         $sql .= "WHERE {$this->primary_key_column} = :{$this->primary_key_column}";
         $db = new DB($sql);
-        $db->Fetch($this->fields);
+        $db->Execute($this->fields);
     }
 
     public function getJSON()

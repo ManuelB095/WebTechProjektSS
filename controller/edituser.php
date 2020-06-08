@@ -19,27 +19,50 @@ $input = [
     'location' => filter_input(INPUT_POST, 'location', FILTER_SANITIZE_STRING),
     'plz' => filter_input(INPUT_POST, 'plz', FILTER_SANITIZE_STRING),
 ];
+$password_old = filter_input(INPUT_POST, 'password_old', FILTER_SANITIZE_STRING);
 
 // From former "UserControl": make sure there are no unknown inputs?
 
-if(empty( $input['username'] ))
+if(empty( $username ))
 {
     echo "No username received.";
     return;
 }
 
-//password_verify($hashedPW, $PWfromDB); // Verify that typed password/Username Combination is the same as the ( hashed one in the database )
+$user = new User($username);
+
+if( !$user->exists )
+{
+    echo "Invalid username.";
+    return;
+}
+
+if( !password_verify($password_old, $user->password) )
+{
+    echo "Old password does not match.";
+    return;
+}
 
 // hash password
-$input['password'] = password_hash($input['password'], PASSWORD_DEFAULT); // returns 60 digit of hex chars
+if(!empty( $input['password'] ))
+{
+    $input['password'] = password_hash($input['password'], PASSWORD_DEFAULT); // returns 60 digit of hex chars
+}
 
 // insert into model and save changes
-$user = new User($username);
 foreach( $input as $column => $field )
 {
-    $user->$column = $field;
+    if(!empty( $field ))
+    {
+        $user->$column = $field;
+    }
 }
 $user->SaveChanges();
+
+if( $username == $_SESSION['username'] )
+{
+    $user->LogIn();
+}
 
 //TODO error handling
 
