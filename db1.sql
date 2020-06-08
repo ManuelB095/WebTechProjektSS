@@ -163,13 +163,13 @@ ALTER TABLE `producttags`
 -- Indexes for table `shoppingcart`
 --
 ALTER TABLE `shoppingcart`
-  ADD PRIMARY KEY (`w_username`);
+  ADD PRIMARY KEY (`w_username`,`w_pid`);
 
 --
 -- Indexes for table `userboughtproduct`
 --
 ALTER TABLE `userboughtproduct`
-  ADD PRIMARY KEY (`b_username`);
+  ADD PRIMARY KEY (`b_username`,`b_pid`);
 
 --
 -- Indexes for table `tags`
