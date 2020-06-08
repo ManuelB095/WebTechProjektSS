@@ -1,22 +1,10 @@
-
-/* Debug yey *
-* {
-    border: 1px gray solid;
-}
-*/
-
-.img-fluid {
-    max-width: 100%;
-    height: auto;
-}
-
 .gallery-root {
-    display: grid;
-    grid-template-columns: auto min-content;
+    margin-top: 1em;
 }
 
 .sidebar-tag-draggable {
     cursor: pointer;
+    margin-left: 0.3em;
 }
 
 .sidebar-taglist {
@@ -25,9 +13,27 @@
 
 .gallery-list {
     display: grid;
-    grid-template-columns: min-content min-content min-content; /*TODO consider adding Media queries (or better yet, somehow check this things width) to adapt this as needed*/
+    grid-template-columns: 100%;
     grid-gap: 1em;
     overflow: auto; /* scrollbar if needed, also requires set height/width to work */
+}
+
+@media only screen and (min-width: 576px) {
+    .gallery-list {
+        grid-template-columns: 50% 50%;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .gallery-list {
+        grid-template-columns: 33% 33% 33%;
+    }
+}
+
+@media only screen and (min-width: 960px) {
+    .gallery-list {
+        grid-template-columns: 25% 25% 25% 25%;
+    }
 }
 
 .gallery-item {
@@ -36,13 +42,14 @@
 
 .gallery-item img {
     cursor: pointer;
-    max-height: 100%;
-    max-width: 100%;
+    max-width: 150px;
+    max-height: 150px;
+    display: block;
+    margin-bottom: 0.3em;
 }
 
-.dialog-image {
-    max-height: 100%;
-    max-width: 100%;
+.gallery-item input {
+    margin: 0.3em;
 }
 
 .badge-bg-yellow, .badge-bg-green {

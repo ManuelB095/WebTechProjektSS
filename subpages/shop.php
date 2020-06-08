@@ -11,16 +11,25 @@ if(!empty( $_SESSION['username'] ))
 <?php
 }
 ?>
-<div id="gallery_root" class="gallery-root">
-    <section id="gallery_list" class="gallery-list <?php if(!empty( $_SESSION['username'] )) echo "upload-area"; ?>">
+<div id="gallery_root" class="gallery-root row justify-content-center">
+    <section id="gallery_list" class="col-md-8 col-sm-7 col-6 gallery-list <?php if(!empty( $_SESSION['username'] )) echo "upload-area"; ?>">
         <!-- populated by JS -->
     </section>
-    <section id="gallery_sidebar">
+    <section id="gallery_sidebar" class="col-md-4 col-sm-5 col-6">
         <button id="btn_filter_reset"><span class="ui-icon ui-icon-arrowreturn-1-w"></span>Filter leeren</button>
         <input id="filter_text" type="text" placeholder="Suchbegriff..." />
-        <input id="check_filter_owned" type="checkbox" checked><label for="check_filter_owned">eigene</label></input>
-        <input id="check_filter_bought" type="checkbox" checked><label for="check_filter_bought">erworbene</label></input>
-        <input id="check_filter_buyable" type="checkbox" checked><label for="check_filter_buyable">kaufbare</label></input>
+        <div>
+            <input id="check_filter_owned" type="checkbox" checked></input>
+            <label for="check_filter_owned" class="form-check-label">eigene</label>
+        </div>
+        <div>
+            <input id="check_filter_bought" type="checkbox" checked></input>
+            <label for="check_filter_bought" class="form-check-label">erworbene</label>
+        </div>
+        <div>
+            <input id="check_filter_buyable" type="checkbox" checked></input>
+            <label for="check_filter_buyable" class="form-check-label">kaufbare</label>
+        </div>
         <hr>
         <select id="select_order">
             <option value="new_first">Neueste zuerst</option>
@@ -48,7 +57,7 @@ if(!empty( $_SESSION['username'] ))
 </div>
 
 <div id="dialog_productdetails" title="Bild-Details">
-    <img id="productdetails_img" class="dialog-image">
+    <img id="productdetails_img" class="img-fluid">
     <button id="productdetails_prev" class="dialog-prev ui-icon ui-icon-caret-1-w">
     <button id="productdetails_next" class="dialog-next ui-icon ui-icon-caret-1-e">
     <div id="productdetails_taglist">

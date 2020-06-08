@@ -100,7 +100,7 @@ if( move_uploaded_file($file["tmp_name"], "ugc/full/$pid/$sourcefilename") )
 {
     //echo "Upload erfolgreich! Das Bild heißt $sourcefilename");
 
-    //Imagick Zeug für Thumbnails, echt coole API
+    // Imagick Zeug für Thumbnails, echt coole API
     /*
     $imagick = new Imagick(realpath("ugc/full/$pid/$sourcefilename"));
     $imagick->setImageFormat('jpg');
@@ -110,10 +110,18 @@ if( move_uploaded_file($file["tmp_name"], "ugc/full/$pid/$sourcefilename") )
     file_put_contents("ugc/thumb/$pid.jpg", $imagick);
     */
 
-    //Imagick-lose Lösung, falls Imagick nicht installiert ist
+    // Imagick-lose Lösung, falls Imagick nicht installiert ist
+    $newx = 150;
+    $newy = $file_info[1] * (150/$file_info[0]);
+    if($file_info[0] < $file_info[1]) // luckily we assume a square boundary, therefore this if check is extremely simple -LG
+    {
+        $newx = $file_info[0] * (150/$file_info[1]);
+        $newy = 150;
+    }
+
     $old_image = imageTypes[$file_info[2]]("ugc/full/$pid/$sourcefilename");
-    $new_image = imagecreatetruecolor(300, 250);
-    imagecopyresized($new_image, $old_image, 0, 0, 0, 0, 300, 250, $file_info[0], $file_info[1]);
+    $new_image = imagecreatetruecolor($newx, $newy);
+    imagecopyresized($new_image, $old_image, 0, 0, 0, 0, $newx, $newy, $file_info[0], $file_info[1]);
     imagejpeg($new_image, "ugc/thumb/$pid.jpg");
 }
 else // should never happen

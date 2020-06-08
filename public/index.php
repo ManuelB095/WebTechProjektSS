@@ -19,8 +19,7 @@ include("../pageparts/head.php");
                 <span id="flash_msg_text"></span>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <main class="col-12">
+        <main>
             <?php
             $subpage = trim(filter_input(INPUT_GET, 'subpage', FILTER_SANITIZE_STRING));
 
@@ -29,8 +28,7 @@ include("../pageparts/head.php");
             else
                 { include( "../subpages/shop.php" ); }
             ?>
-            </main>
-        </div>
+        </main>
     </div>
 
 <?php
