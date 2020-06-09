@@ -8,6 +8,7 @@ class User extends Model
     |------------------------------------------------
     */
 
+    const publicFields = ["username", "email", "title", "firstname", "lastname", "address", "location", "plz", "is_admin", "is_active"];
 
     /*
     |------------------------------------------------
@@ -18,12 +19,7 @@ class User extends Model
     function __construct($username)
     {
         //ctor
-        $this->AutoFillByKeyValue('webuser','username',$username);
-    }
-
-    function __destruct()
-    {
-        //dtor
+        $this->AutoFillByKeyValue('users','username',$username);
     }
 
     /*
@@ -32,8 +28,16 @@ class User extends Model
     |------------------------------------------------
     */
 
-    public function myFunction()
+    function LogIn()
     {
-        //dtor
+        // populate $_SESSION as needed if not logged in yet
+        if( $this->exists )
+        {
+            foreach( self::publicFields as $field )
+            {
+                $_SESSION[$field] = $this->fields[ $field ];
+            }
+        }
     }
+
 }

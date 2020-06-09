@@ -2,14 +2,15 @@
 
 function Config($file, $property)
 {
-    if( !empty( $file )
+    assert( !empty( $file )
         && gettype( $file ) == 'string'
         && file_exists( "../config/$file.php" )
-    ) {
-        $data = include("../config/$file.php");
-        if( !empty( $data ) && array_key_exists($property, $data))
-        {
-            return $data[ $property ];
-        }
-    }
+    , "Tried to access nonexistant config file $file.php!");
+
+    $data = include("../config/$file.php");
+
+    assert( !empty( $data ) && array_key_exists($property, $data)
+    , "Failed to access config property $property in $file.php!");
+    
+    return $data[ $property ];
 }

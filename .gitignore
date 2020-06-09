@@ -1,0 +1,3 @@
+# Dieser Ordner soll mit der Datenbank synchron bleiben. Keine Migration => Ordner nicht synchronisieren.
+public/ugc/
+
