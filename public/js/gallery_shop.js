@@ -88,6 +88,17 @@ class SidebarTagView
         return checked;
     }
 
+    static GetModelByID( tid )
+    {
+        for(let i = this._all.length -1; i >= 0; --i)
+        {
+            if( this._all[i]._model.tid == tid )
+            {
+                return this._all[i]._model;
+            }
+        }
+    }
+
 }
 
 
@@ -108,7 +119,8 @@ class DetailsTagView
 
         this._model = model;
 
-        this.div = $('<div>');
+        this.div = $('<span>');
+        this.div.addClass('details-tag');
         this.div.html( this._model.t_name );
         this.div.on('click', this.onclick_div.bind(this));
 
@@ -120,15 +132,18 @@ class DetailsTagView
         if( confirm("Wollen Sie diesen Tag entfernen?") )
         {
             // tell models to disassociate from one another and remove this html
+            let pid = $('#dialog_productdetails').attr('productid');
+            let tid = this._model.tid
             AjaxActionAndFlash({
                 'action':'deleteproducttag',
-                'pid':$('#dialog_productdetails').attr('productid'),
-                'tid':this._model.tid,
+                'pid':pid,
+                'tid':tid,
             },  function(response)
                 {
                     FlashSuccess("Tag von Bild enfernt.");
-                    //TODO remove this
-                    //TODO is there a clientside copy of the relation that
+                    DetailsTagView.remove(tid);
+                    // remove clientside copy of the relation from product model
+                    GalleryProductView.removeTag( pid, tid );
                 }
             );
         }
@@ -144,6 +159,23 @@ class DetailsTagView
             delete this._all[i];
         }
         this._all = [];
+    }
+
+    static remove(tid)
+    {
+        for(let i = this._all.length -1; i >= 0; --i)
+        {
+            if( this._all[i]._model.tid == tid )
+            {
+                //destroy DOM
+                this._all[i].div.remove()
+                //unregister this
+                delete this._all[i];
+                this._all.splice(i, 1);
+
+                return true;
+            }
+        }
     }
 
 }
@@ -222,10 +254,15 @@ class GalleryProductView
     {
         $('#dialog_productdetails').attr('productid', this._model.pid);
         $('#productdetails_img').prop('src','ugc/full/'+ this._model.pid +'/'+this._model.pr_filename);
-        DetailsTagView.removeAll();
-        //TODO foreach model.tags do new DetailsTagView(tag)
-        //TODO should the clientside models already have relation info or should we fetch it anew here?
         $('#productdetails_geodata').html('(171,64/92,08)'); //TODO use actual data
+
+        DetailsTagView.removeAll();
+        // foreach model.tags do new DetailsTagView(tag)
+        for(let i = this._model.tags.length -1; i >= 0; --i)
+        {
+            let tmodel = SidebarTagView.GetModelByID( this._model.tags[i] );
+            new DetailsTagView( tmodel );
+        }
     }
 
     onclick_div(e)
@@ -239,13 +276,15 @@ class GalleryProductView
     ondropreceive_div( e, ui )
     {
         // tell server to tag this product
+        let model = this._model;
         AjaxActionAndFlash({
             'action':'createproducttag',
             'tid':ui.draggable.attr('tagid'),
-            'pid':this._model.pid,
+            'pid':model.pid,
         },  function(response)
             {
                 FlashSuccess("Bild getagged!");
+                model.tags.push( ui.draggable.attr('tagid') );
             }
         );
     }
@@ -335,6 +374,26 @@ class GalleryProductView
                 }
 
                 return true;
+            }
+        }
+    }
+
+    static removeTag(pid, tid)
+    {
+        for(let i = this._all.length -1; i >= 0; --i)
+        {
+            let model = this._all[i]._model;
+            if( model.pid == pid )
+            {
+                for(let j = model.tags.length -1; j >= 0; --j)
+                {
+                    if( model.tags[j] == tid )
+                    {
+                        model.tags.splice(j, 1);
+                        return true;
+                    }
+                }
+                return false;
             }
         }
     }

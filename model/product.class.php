@@ -51,6 +51,17 @@ class Product extends Model
             { $obj['access'] = 1; }
         else
             { $obj['access'] = 0; }
+        
+        $db = new DB('SELECT tid FROM producttags WHERE pid = :pid');
+        $results = $db->Fetch([
+            'pid' => $this->pid,
+        ]);
+
+        $obj['tags'] = [];
+        foreach($results as $line)
+        {
+            array_push( $obj['tags'], $line['tid'] );
+        }
     }
 
 }
