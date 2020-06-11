@@ -88,6 +88,14 @@ class SidebarTagView
         return checked;
     }
 
+    static uncheckAll()
+    {
+        for(let i = 0; i < this._all.length; ++i)
+        {
+            this._all[i].check.prop('checked', false);
+        }
+    }
+
     static GetModelByID( tid )
     {
         for(let i = this._all.length -1; i >= 0; --i)
@@ -245,6 +253,9 @@ class GalleryProductView
 
         this.check = $("<input>");
         this.check.prop("type", "checkbox");
+        this.check.on('click', function(e) {
+            e.stopPropagation();
+        });
         this.div.append( this.check );
 
         $('#gallery_list').append(this.div);
@@ -269,7 +280,6 @@ class GalleryProductView
 
     onclick_div(e)
     {
-        //TODO this should not fire when clicking the checkbox
         //TODO should this only work if the current user has download permissions for the item? -LG
         this.setProductDetailsToThis();
         $('#dialog_productdetails').dialog('open');
@@ -620,6 +630,7 @@ jQuery(document).ready(function($)
         $("#check_filter_owned").prop('checked', true);
         $("#check_filter_bought").prop('checked', true);
         $("#check_filter_buyable").prop('checked', true);
+        SidebarTagView.uncheckAll();
         //TODO update #gallery_list
     });
 
