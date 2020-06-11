@@ -43,7 +43,7 @@ class SidebarTagView
 
     onclick_check(e)
     {
-        //TODO updateFilter(tagname);
+        GalleryProductView.updateFilter();
     }
 
     static removeAll()
@@ -422,6 +422,36 @@ class GalleryProductView
         }
         return checked;
     }
+
+    static updateFilter()
+    {
+        let wantedtags = SidebarTagView.getAllCheckedID();
+        let wantedowned = $('#check_filter_owned').prop('checked');
+        let wantedbought = $('#check_filter_bought').prop('checked');
+        let wantedbuyable = $('#check_filter_buyable').prop('checked');
+        let all = GalleryProductView._all;
+
+        for(let i = 0; i < all.length; ++i)
+        {
+            let tagsmatch = true;
+            if( wantedtags.length > 0 )
+            {
+                //TODO
+            }
+
+            if( tagsmatch
+                && ( (all[i]._model.access == 0 && wantedbuyable) 
+                  || (all[i]._model.access == 1 && wantedbought) 
+                  || (all[i]._model.access == 2 && wantedowned) ))
+            {
+                all[i].div.show();
+            }
+            else
+            {
+                all[i].div.hide();
+            }
+        }
+    }
 }
 
 
@@ -631,7 +661,7 @@ jQuery(document).ready(function($)
         $("#check_filter_bought").prop('checked', true);
         $("#check_filter_buyable").prop('checked', true);
         SidebarTagView.uncheckAll();
-        //TODO update #gallery_list
+        GalleryProductView.updateFilter();
     });
 
     $('#btn_delete').on('click', function(e)
@@ -797,6 +827,8 @@ jQuery(document).ready(function($)
             }
         );
     });
+
+    $('#check_filter_owned, #check_filter_bought, #check_filter_buyable').on('click', GalleryProductView.updateFilter );
 
     /*
     |------------------------------------------------
