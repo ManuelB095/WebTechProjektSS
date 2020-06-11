@@ -255,6 +255,8 @@ class GalleryProductView
         $('#dialog_productdetails').attr('productid', this._model.pid);
         $('#productdetails_img').prop('src','ugc/full/'+ this._model.pid +'/'+this._model.pr_filename);
         $('#productdetails_geodata').html('(171,64/92,08)'); //TODO use actual data
+        $('#productdetails_date').html(this._model.pr_upload_date);
+        $('#productdetails_owner').html(this._model.pr_owner);
 
         DetailsTagView.removeAll();
         // foreach model.tags do new DetailsTagView(tag)
@@ -577,6 +579,11 @@ jQuery(document).ready(function($)
         //modal: true,
     });
 
+    /*
+    |------------------------------------------------
+    | Button Callbacks
+    |------------------------------------------------
+    */
 
     $('#productdetails_prev').on('click', function(e)
     {
@@ -584,6 +591,7 @@ jQuery(document).ready(function($)
             .GetPrevObject($('#dialog_productdetails').attr('productid'))
                 .setProductDetailsToThis();
     });
+
     $('#productdetails_next').on('click', function(e)
     {
         GalleryProductView
@@ -591,6 +599,20 @@ jQuery(document).ready(function($)
                 .setProductDetailsToThis();
     });
 
+    $('#btn_productdetails_download').on('click', function(e)
+    {
+        // send download request to server via AJAX, do nothing else on success (other than maybe a "your download starts now" message
+        AjaxActionAndFlash({
+            'action':'download',
+            'pid':$('#dialog_productdetails').attr('productid'),
+            'colour':$('#productdetails_colour').prop('checked') ? 1 : 0,
+            'scale':$('#productdetails_scale').val(),
+        },  function(response)
+            {
+                FlashSuccess( "Bild wird heruntergeladen." );
+            }
+        );
+    });
 
     $("#btn_filter_reset").on("click", function(e)
     {
@@ -637,7 +659,28 @@ jQuery(document).ready(function($)
 
     $('#btn_download').on('click', function(e)
     {
-        //TODO no idea how to do this one elegantly, or at all -LG
+        // send download requests to server via AJAX, do nothing else on success (other than maybe a "your download starts now" message
+        let targets = GalleryProductView.getAllCheckedID();
+        AjaxActionAndFlash({
+            'action':'download',
+            'pid':JSON.stringify(targets),
+        },  function(response)
+            {
+                // notification
+                if( response.length == 0 )
+                {
+                    FlashSuccess( targets.length +" Bilder werden heruntergeladen." );
+                }
+                else if( response.length < targets.length )
+                {
+                    FlashWarning( response.length +" Bilder können nicht heruntergeladen werden:<br>"+ response.join("<br>") );
+                }
+                else
+                {
+                    FlashError( "Die Bilder können nicht heruntergelaten werden:<br>"+ response.join("<br>") );
+                }
+            }
+        );
     });
 
     $('#btn_addcart').on('click', function(e)

@@ -64,7 +64,23 @@ if(!empty( $_SESSION['username'] ))
         <!-- populated by JS -->
     </div>
     <p>Geodaten: € <span id="productdetails_geodata"></span></p>
-    <button id="btn_productdetails_download">Herunterladen</button> <!--TODO-->
+    <p>am: <span id="productdetails_date"></span></p>
+    <p>von: <span id="productdetails_owner"></span></p>
+    <div>
+        <input id="productdetails_colour" name="colour" type="checkbox" checked></input>
+        <label for="productdetails_colour" class="form-check-label">Farbig</label>
+    </div>
+    <div>
+        <input id="productdetails_scale" name="scale" type="number" min=1 max=100 value=100 style="width:5em"></input>
+        <label for="productdetails_scale" class="form-check-label">% Auflösung</label>
+        <!-- TODO or give actual dimensions by clientside-checking the real image somehow? -->
+    </div>
+    <div>
+        <input id="productdetails_crop" type="checkbox"></input>
+        <label for="productdetails_crop" class="form-check-label">Zuschneiden</label>
+        <!-- TODO include the JQuery Cropper -->
+    </div>
+    <button id="btn_productdetails_download">Herunterladen</button>
 </div>
 <?php
 // only if logged in
