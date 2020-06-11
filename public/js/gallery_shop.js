@@ -280,7 +280,9 @@ class GalleryProductView
 
     onclick_div(e)
     {
-        //TODO should this only work if the current user has download permissions for the item? -LG
+        // This should only work if the current user has permissions for the item. -LG
+        if( this._model.access < 1 ) { return; }
+
         this.setProductDetailsToThis();
         $('#dialog_productdetails').dialog('open');
     }
@@ -457,6 +459,47 @@ class GalleryProductView
             {
                 all[i].div.hide();
             }
+        }
+    }
+
+    static orders = {
+        // return < 0 means a comes first, > 0 means b comes first
+        'new_first': function(a, b)
+        {
+            // Technically, we should use pr_upload_date, but the pid is an auto-incrementing ID, so naturally newer entries have higher pid. -LG
+            return b._model.pid - a._model.pid;
+        },
+        'old_first': function(a, b)
+        {
+            return a._model.pid - b._model.pid;
+        },
+        'user_asc': function(a, b)
+        {
+            // In order to get a consistent sort order, we need to sneak a secondary order in. -LG
+            let byname = a._model.pr_owner.localeCompare(b._model.pr_owner);
+            return byname == 0 ? b._model.pid - a._model.pid : byname;
+        },
+        'user_desc': function(a, b)
+        {
+            let byname = b._model.pr_owner.localeCompare(a._model.pr_owner);
+            return byname == 0 ? b._model.pid - a._model.pid : byname;
+        },
+    }
+
+    static updateOrder( order )
+    {
+        if( this.orders[order] )
+        {
+            this._all.sort( this.orders[order] );
+        }
+        else
+        {
+            this._all.sort( this.orders.new_first );
+        }
+
+        for(let i = 0; i < this._all.length; ++i)
+        {
+            $('#gallery_list').append( this._all[i].div );
         }
     }
 }
@@ -836,6 +879,13 @@ jQuery(document).ready(function($)
     });
 
     $('#check_filter_owned, #check_filter_bought, #check_filter_buyable').on('click', GalleryProductView.updateFilter );
+
+    $('#select_order').on('change', function()
+    {
+        let order = $(this).val();
+        GalleryProductView.updateOrder( order );
+    });
+
 
     /*
     |------------------------------------------------
