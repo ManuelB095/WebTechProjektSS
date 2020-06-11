@@ -436,7 +436,14 @@ class GalleryProductView
             let tagsmatch = true;
             if( wantedtags.length > 0 )
             {
-                //TODO
+                for(let j = 0; j < wantedtags.length; ++j)
+                {
+                    if( all[i]._model.tags.indexOf(wantedtags[j]) == -1 )
+                    {
+                        tagsmatch = false;
+                        break;
+                    }
+                }
             }
 
             if( tagsmatch
