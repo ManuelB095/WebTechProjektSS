@@ -38,7 +38,7 @@ class Product extends Model
             'pid' => $this->pid,
         ]);
 
-        return !empty($count);
+        return !empty($count[0]['COUNT(*)']);
     }
 
     protected function extendPreJSON(&$obj)
