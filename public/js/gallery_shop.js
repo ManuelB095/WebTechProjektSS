@@ -886,6 +886,8 @@ jQuery(document).ready(function($)
         GalleryProductView.updateOrder( order );
     });
 
+    $('#select_order').trigger('change'); // init
+
 
     /*
     |------------------------------------------------
