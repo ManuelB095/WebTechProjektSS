@@ -106,7 +106,7 @@ if( move_uploaded_file($file["tmp_name"], "ugc/full/$pid/$sourcefilename") )
     $imagick->setImageFormat('jpg');
     $imagick->setImageCompression(Imagick::COMPRESSION_JPEG);
     $imagick->setImageCompressionQuality(90);
-    $imagick->thumbnailImage(300, 250, false, false);
+    $imagick->thumbnailImage(150, 150, true, false);
     file_put_contents("ugc/thumb/$pid.jpg", $imagick);
     */
 

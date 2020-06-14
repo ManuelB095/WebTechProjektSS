@@ -1,7 +1,18 @@
 <h1>Hilfe</h1>
 
 <h2>Bedienung der Webseite</h2>
-<p>TODO</p>
+<h3>Hochladen</h3>
+<p>Ziehen Sie die Dateien, die Sie hochladen wollen, auf die Bildergallerie. Es können nur Bilder in den gängigen Formaten (z.B. JPG) hochgeladen werden.</p>
+<h3>Tags</h3>
+<p>Ziehen Sie Tags aus der Liste unten rechts auf ihre hochgeladenen Bilder, wenn das jeweilige Bild mit dem jeweiligen Thema zu tun hat. Nun scheinen ihre Bilder auf, wenn nach den entsprechenden Tags gefiltert wird.</p>
+<h3>Herunterladen</h3>
+<p>Sie können Ihre Bilder jederzeit wieder herunterladen. Wählen Sie dazu alle gewünschten Bilder aus und klicken Sie auf "Herunterladen".</p>
+<p>Alternativ dazu können Sie auf ein bestimmtes Bild klicken und die Qualitäts-Einstellungen vor dem Herunterladen anpassen.</p>
+<h3>Kaufen</h3>
+<p>Um Bilder anderer Personen herunterladen zu können, müssen Sie diese zuerst kaufen. Wählen Sie dazu die gewünschten Bilder aus oder ziehen Sie diese direkt in den Warenkorb. Dann öffnen Sie den Warenkorb und bestätigen die Bestellung.</p>
+<p>Eine braune Marke scheint unter gekauften Bildern auf.</p>
+<h3>RSS Feed</h3>
+<p>Der RSS Feed zeigt die neuesten Bilder an. Am Seitenanfang findet sich ein Link zur XML-Version für RSS-Reader.</p>
 
 <h2>Über Uns</h2>
 <p><em><?php echo Config('app','name'); ?></em> ist eine Projektarbeit für Webtechnologien 2 an der Fachhochschule Technikum Wien. Die Website ist eine Plattform für den Vertrieb einzelner Fotografien bzw. digitaler Kunst (ohne tatsächliche Zahlung).</p>
