@@ -121,7 +121,36 @@ if( move_uploaded_file($file["tmp_name"], "ugc/full/$pid/$sourcefilename") )
 
     $old_image = imageTypes[$file_info[2]]("ugc/full/$pid/$sourcefilename");
     $new_image = imagecreatetruecolor($newx, $newy);
+
     imagecopyresized($new_image, $old_image, 0, 0, 0, 0, $newx, $newy, $file_info[0], $file_info[1]);
+
+    $exif = exif_read_data("ugc/full/$pid/$sourcefilename");
+    if(!empty( $exif['Orientation'] ))
+    {
+        switch( $exif['Orientation'] )
+        {
+            case 3:
+            case 4:
+                $new_image = imagerotate($new_image, 180, 0);
+                break;
+            case 5:
+            case 6:
+                $new_image = imagerotate($new_image, -90, 0);
+                break;
+            case 7:
+            case 8:
+                $new_image = imagerotate($new_image, 90, 0);
+                break;
+        }
+        if( $exif['Orientation'] == 2
+         || $exif['Orientation'] == 4
+         || $exif['Orientation'] == 5
+         || $exif['Orientation'] == 7 ) 
+        {
+            imageflip($new_image, IMG_FLIP_HORIZONTAL);
+        }
+    }
+
     imagejpeg($new_image, "ugc/thumb/$pid.jpg");
 }
 else // should never happen
