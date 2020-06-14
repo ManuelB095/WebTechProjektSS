@@ -692,14 +692,23 @@ jQuery(document).ready(function($)
     $('#btn_productdetails_download').on('click', function(e)
     {
         // send download request to server via AJAX, do nothing else on success (other than maybe a "your download starts now" message
-        AjaxActionAndFlash({
+        AjaxBlob({
             'action':'download',
             'pid':$('#dialog_productdetails').attr('productid'),
             'colour':$('#productdetails_colour').prop('checked') ? 1 : 0,
             'scale':$('#productdetails_scale').val(),
         },  function(response)
             {
-                FlashSuccess( "Bild wird heruntergeladen." );
+                let url = window.URL.createObjectURL(response);
+                let srcurl = $('#productdetails_img').prop('src');
+                let a = $('<a>');
+                a.css('display','none');
+                a.prop('href',url);
+                a.prop('download', srcurl.slice(srcurl.lastIndexOf('/')+1) );
+                a[0].click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                FlashSuccess( "Bild wurde heruntergeladen." );
             }
         );
     });
@@ -752,24 +761,20 @@ jQuery(document).ready(function($)
     {
         // send download requests to server via AJAX, do nothing else on success (other than maybe a "your download starts now" message
         let targets = GalleryProductView.getAllCheckedID();
-        AjaxActionAndFlash({
+        AjaxBlob({
             'action':'download',
             'pid':JSON.stringify(targets),
         },  function(response)
             {
-                // notification
-                if( response.length == 0 )
-                {
-                    FlashSuccess( targets.length +" Bilder werden heruntergeladen." );
-                }
-                else if( response.length < targets.length )
-                {
-                    FlashWarning( response.length +" Bilder können nicht heruntergeladen werden:<br>"+ response.join("<br>") );
-                }
-                else
-                {
-                    FlashError( "Die Bilder können nicht heruntergelaten werden:<br>"+ response.join("<br>") );
-                }
+                let url = window.URL.createObjectURL(response);
+                let a = $('<a>');
+                a.css('display','none');
+                a.prop('href',url);
+                a.prop('download', 'downloaded-images.zip' );
+                a[0].click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                FlashSuccess( "Bilder wurden heruntergeladen." );
             }
         );
     });

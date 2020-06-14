@@ -99,6 +99,47 @@ function AjaxActionAndFlash(data, onsuccess)
     });
 }
 
+// https://stackoverflow.com/questions/17657184/using-jquerys-ajax-method-to-retrieve-images-as-a-blob
+function AjaxBlob(data, onsuccess)
+{
+    $('#flash_msg').hide( 'fade', {}, 200 );
+
+    let fd;
+    if( data instanceof FormData )
+    {
+        fd = data;
+    }
+    else if( data != null )
+    {
+        fd = new FormData();
+        for( let key in data )
+        {
+            fd.append( key, data[key] );
+        }
+    }
+
+    $.ajax({
+        url: 'actions.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        cache: false,
+        //dataType: 'blob',
+        xhr: function() 
+        {
+            var xhr = new XMLHttpRequest();
+            xhr.responseType= 'blob'
+            return xhr;
+        },
+        success: onsuccess,
+        error: function(jqxhr, status, exception)
+        {
+            FlashError(jqxhr.responseText);
+        },
+    });
+}
+
 /*
 |------------------------------------------------
 | On Ready Callback
