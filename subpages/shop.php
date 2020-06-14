@@ -91,7 +91,7 @@ if(!empty( $_SESSION['username'] ))
     <div id="shopcart_list">
         <!-- populated by JS -->
     </div>
-    <p>Gesamtpreis: € <span id="shopcart_total"></span></p>
+    <p>Gesamtpreis: € <span id="shopcart_total">0,--</span></p>
     <p>Lieferadresse:<br><?php echo $_SESSION['address']; ?><br><?php echo $_SESSION['plz']; ?> <?php echo $_SESSION['location']; ?></p>
 </div>
 <?php

@@ -537,6 +537,7 @@ class ShopcartProductView
         this.div.append(this.btn_uncart);
 
         $('#shopcart_list').append(this.div);
+        $('#shopcart_total').html( (ShopcartProductView._all.length * 10).toString() +',--');
     }
 
     onclick_uncart(e)
@@ -561,6 +562,7 @@ class ShopcartProductView
             this.div.remove()
             //unregister this
             ShopcartProductView._all.splice(i, 1);
+            $('#shopcart_total').html( (ShopcartProductView._all.length * 10).toString() +',--');
             delete this;
             return true;
         }
@@ -577,6 +579,7 @@ class ShopcartProductView
                 //unregister this
                 delete this._all[i];
                 this._all.splice(i, 1);
+                $('#shopcart_total').html( (ShopcartProductView._all.length * 10).toString() +',--');
 
                 return true;
             }
@@ -593,6 +596,7 @@ class ShopcartProductView
             delete this._all[i];
         }
         this._all = [];
+        $('#shopcart_total').html('0,--');
     }
 
     static GetIDs()
@@ -891,8 +895,6 @@ jQuery(document).ready(function($)
         GalleryProductView.updateOrder( order );
     });
 
-    $('#select_order').trigger('change'); // init
-
 
     /*
     |------------------------------------------------
@@ -992,11 +994,14 @@ jQuery(document).ready(function($)
                     processData: false,
                     cache: false,
                     dataType: 'json',
-                    success: function(response)
+                    success: function(response_model)
                     {
-                        new GalleryProductView(response);
-                        if( shopcarted.indexOf(response.pid) != -1 )
-                            new ShopcartProductView(response);
+                        new GalleryProductView(response_model);
+                        if( shopcarted.indexOf(response_model.pid) != -1 )
+                            new ShopcartProductView(response_model);
+
+                        if( i = response.length - 1 )
+                            GalleryProductView.updateOrder('new_first'); // init
                     },
                     error: function(jqxhr, status, exception)
                     {
