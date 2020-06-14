@@ -695,7 +695,7 @@ jQuery(document).ready(function($)
         AjaxBlob({
             'action':'download',
             'pid':$('#dialog_productdetails').attr('productid'),
-            'colour':$('#productdetails_colour').prop('checked') ? 1 : 0,
+            'grayscale':$('#productdetails_colour').prop('checked') ? 0 : 1,
             'scale':$('#productdetails_scale').val(),
         },  function(response)
             {

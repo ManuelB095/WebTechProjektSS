@@ -8,6 +8,14 @@ if(empty( $_SESSION['username'] ))
     return;
 }
 
+const imageTypes = [
+    IMAGETYPE_GIF => "ImageCreateFromGIF",
+    IMAGETYPE_JPEG => "ImageCreateFromJPEG",
+    IMAGETYPE_PNG => "ImageCreateFromPNG",
+    IMAGETYPE_BMP => "ImageCreateFromBMP",
+    IMAGETYPE_WEBP => "ImageCreateFromWEBP",
+];
+
 
 // retrieve sanitised inputs
 $inputjson = filter_input(INPUT_POST, 'pid', FILTER_UNSAFE_RAW);
@@ -72,16 +80,20 @@ if( !empty($input) && gettype($input) == 'array' )
 
     //echo json_encode($errors);
 }
+
+
 // allow single-download by double-checking the input field
 elseif(!empty( $pid = filter_input(INPUT_POST, 'pid', FILTER_SANITIZE_NUMBER_INT) ))
 {
     // retrieve sanitised inputs
     //$pid = filter_input(INPUT_POST, 'pid', FILTER_SANITIZE_NUMBER_INT);
-    $colour = filter_input(INPUT_POST, 'colour', FILTER_SANITIZE_NUMBER_INT); // bool 0 - 1
+    $grayscale = filter_input(INPUT_POST, 'grayscale', FILTER_SANITIZE_NUMBER_INT); // bool 0 - 1
     $scale = filter_input(INPUT_POST, 'scale', FILTER_SANITIZE_NUMBER_INT); // int 1 - 100
+    if( empty($scale) || $scale < 1 || $scale > 100 )
+        { $scale = 1; }
+    else
+        { $scale = $scale / 100; }
 
-
-    //TODO test and implement filter magic
 
     $db = new DB("SELECT pr_owner, pr_filename FROM products WHERE pid = :pid");
 
@@ -104,9 +116,34 @@ elseif(!empty( $pid = filter_input(INPUT_POST, 'pid', FILTER_SANITIZE_NUMBER_INT
         }
     }
 
+    // Get magic number
+    $file_info = getimagesize("ugc/full/$pid/{$results_pr[0]['pr_filename']}");
+
+    $src_image = imageTypes[$file_info[2]]("ugc/full/$pid/{$results_pr[0]['pr_filename']}");
+/*
+    $newx0 = $file_info[0] * (100 - $scale);
+    $newy0 = $file_info[1] * (100 - $scale);
+    $newx1 = $file_info[0] * $scale;
+    $newy1 = $file_info[1] * $scale;
+    $new_image = imagecreatetruecolor($newx, $newy);
+    imagecopyresized($new_image, $src_image, $newx0, $newy0, 0, 0, $newx1, $newy1, $file_info[0], $file_info[1]);
+*/
+    $new_image = imagescale($src_image, $file_info[0] * $scale, -1,  IMG_BICUBIC_FIXED);
+
+    if(empty($grayscale))
+    {
+        imagefilter($new_image, IMG_FILTER_GRAYSCALE);
+    }
+
+    // Stupid: We need to write a file stream just to get the size
+    $new_filename = Config('app','name') .'-Download-'. uniqid() .'.jpg';
+    imagejpeg($new_image, $new_filename, 90);
+    $new_filesize = filesize($new_filename);
+    unlink($new_filename);
+
     header('Content-Type: application/octet-stream');
     header('Content-Disposition: attachment; filename="'. $results_pr[0]['pr_filename'] .'"');
-    header('Content-Length: '. filesize("ugc/full/$pid/{$results_pr[0]['pr_filename']}") );
+    header('Content-Length: '. $new_filesize );
     header('Content-Transfer-Encoding: binary');
     header('Connection: Keep-Alive');
     header('Expires: 0');
@@ -115,8 +152,8 @@ elseif(!empty( $pid = filter_input(INPUT_POST, 'pid', FILTER_SANITIZE_NUMBER_INT
 
     flush(); // sends all up until now, clearing buffer in the process
 
-    readfile("ugc/full/$pid/{$results_pr[0]['pr_filename']}"); // echo
-
+    //readfile(); // echo
+    imagejpeg($new_image, NULL, 90);
 
     //echo "true";
 }
