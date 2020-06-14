@@ -11,6 +11,23 @@
     overflow: auto; /* scrollbar if needed, also requires set height/width to work */
 }
 
+.details-tag, .sidebar-tag-draggable {
+    padding-left: 0.1em;
+    padding-right: 0.1em;
+
+    border-radius: 10%;
+    border-width: 1pt;
+    border-style: solid;
+
+    border-color: #999;
+    background-color: #EEE;
+}
+
+.details-tag {
+    cursor: pointer;
+    margin: 0.2em;
+}
+
 .gallery-list {
     display: grid;
     grid-template-columns: 100%;
@@ -66,5 +83,9 @@
 .badge-bg-green {
     border-color: #696;
     background-color: #9C9;
+}
+
+.shopcart-item {
+    margin-bottom: 0.2em;
 }
 

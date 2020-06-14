@@ -523,6 +523,7 @@ class ShopcartProductView
         this._model = model;
 
         this.div = $('<div>');
+        this.div.addClass('shopcart-item');
 
         this.img = $('<img>');
         this.img.addClass('img-fluid');

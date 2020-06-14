@@ -1,5 +1,5 @@
 <h1>News</h1>
-<a href="rss"><span class="ui-icon ui-icon-link"></span>RSS</a>
+<a href="rss"><span class="ui-icon ui-icon-link"></span>RSS</a><br>
 
 <?php
 
