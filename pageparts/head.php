@@ -1,7 +1,7 @@
 <head>
     <title><?php echo Config('app','name'); ?></title>
     <meta name="description" content="Bitte kaufen Sie unsere legitim erworbenen Fotografien.">
-    <meta name="keywords" content="FHTW, Technikum">
+    <meta name="keywords" content="FHTW, Technikum, Bilder">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 

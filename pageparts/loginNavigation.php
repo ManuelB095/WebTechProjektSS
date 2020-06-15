@@ -12,7 +12,7 @@
                         <input class="form-control" type="password" id="login_password" placeholder="Password" required/>
                     </div>
                     <button id="btn_login" class="btn btn-warning">Login</button>
-                    <button id="btn_register">Register</a>
+                    <button id="btn_register">Register</button>
                 </div>
              </li>
 <!-- <script src="./js/loginUtilities.js"></script> -->

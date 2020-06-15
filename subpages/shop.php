@@ -19,15 +19,15 @@ if(!empty( $_SESSION['username'] ))
         <button id="btn_filter_reset"><span class="ui-icon ui-icon-arrowreturn-1-w"></span>Filter leeren</button>
         <input id="filter_text" type="text" placeholder="Suchbegriff..." />
         <div>
-            <input id="check_filter_owned" type="checkbox" checked></input>
+            <input id="check_filter_owned" type="checkbox" checked />
             <label for="check_filter_owned" class="form-check-label">eigene</label>
         </div>
         <div>
-            <input id="check_filter_bought" type="checkbox" checked></input>
+            <input id="check_filter_bought" type="checkbox" checked />
             <label for="check_filter_bought" class="form-check-label">erworbene</label>
         </div>
         <div>
-            <input id="check_filter_buyable" type="checkbox" checked></input>
+            <input id="check_filter_buyable" type="checkbox" checked />
             <label for="check_filter_buyable" class="form-check-label">kaufbare</label>
         </div>
         <hr>
@@ -57,7 +57,7 @@ if(!empty( $_SESSION['username'] ))
 </div>
 
 <div id="dialog_productdetails" title="Bild-Details">
-    <img id="productdetails_img" class="img-fluid">
+    <img id="productdetails_img" class="img-fluid" src="assets/FHLogo.png" alt="Ausgewähltes Bild">
     <button id="productdetails_prev" class="dialog-prev ui-icon ui-icon-caret-1-w"></button>
     <button id="productdetails_next" class="dialog-next ui-icon ui-icon-caret-1-e"></button>
     <div id="productdetails_taglist">
@@ -67,16 +67,16 @@ if(!empty( $_SESSION['username'] ))
     <p>am: <span id="productdetails_date"></span></p>
     <p>von: <span id="productdetails_owner"></span></p>
     <div>
-        <input id="productdetails_colour" name="colour" type="checkbox" checked></input>
+        <input id="productdetails_colour" name="colour" type="checkbox" checked />
         <label for="productdetails_colour" class="form-check-label">Farbig</label>
     </div>
     <div>
-        <input id="productdetails_scale" name="scale" type="number" min=1 max=100 value=100 style="width:5em"></input>
+        <input id="productdetails_scale" name="scale" type="number" min=1 max=100 value=100 style="width:5em" />
         <label for="productdetails_scale" class="form-check-label">% Auflösung</label>
         <!-- TODO or give actual dimensions by clientside-checking the real image somehow? -->
     </div>
     <div>
-        <input id="productdetails_crop" type="checkbox"></input>
+        <input id="productdetails_crop" type="checkbox" />
         <label for="productdetails_crop" class="form-check-label">Zuschneiden</label>
         <!-- TODO include the JQuery Cropper -->
     </div>

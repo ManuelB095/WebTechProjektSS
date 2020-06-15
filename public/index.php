@@ -26,6 +26,7 @@ include("../pageparts/head.php");
             if(!empty( $subpage ) && file_exists( "../subpages/$subpage.php" ))
                 { include( "../subpages/$subpage.php" ); }
             else
+                $_GET['subpage'] = 'shop';
                 { include( "../subpages/shop.php" ); }
             ?>
         </main>
@@ -55,13 +56,13 @@ if(empty( $_SESSION['username'] ))
         </form>
     </div>
 
-    <div id="dialog_login" title="Anmelden">
+    <!-- div id="dialog_login" title="Anmelden">
         <form method="post">
             <input id="login_username" name="username" type="text" required placeholder="Nutzername" />
             <input id="login_password" name="password" type="password" required placeholder="Passwort" />
             <button id="btn_login" type="submit">Anmelden</button>
         </form>
-    </div>
+    </div -->
 <?php
 }
 else

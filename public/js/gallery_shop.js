@@ -216,6 +216,7 @@ class GalleryProductView
 
         this.img = $("<img>");
         this.img.prop('src', 'ugc/thumb/'+ this._model.pid +'.jpg');
+        this.img.prop('alt', this._model.pid);
         this.img.addClass('gallery-product-draggable');
         this.img.draggable({
             revert: true,
