@@ -24,10 +24,14 @@ include("../pageparts/head.php");
             $subpage = trim(filter_input(INPUT_GET, 'subpage', FILTER_SANITIZE_STRING));
 
             if(!empty( $subpage ) && file_exists( "../subpages/$subpage.php" ))
-                { include( "../subpages/$subpage.php" ); }
+            {
+                include( "../subpages/$subpage.php" );
+            }
             else
+            {
                 $_GET['subpage'] = 'shop';
-                { include( "../subpages/shop.php" ); }
+                include( "../subpages/shop.php" );
+            }
             ?>
         </main>
     </div>
