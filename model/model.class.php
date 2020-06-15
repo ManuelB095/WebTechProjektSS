@@ -118,7 +118,7 @@ class Model
         if(isset( self::$publicFields ))
         {
             //TODO Maybe blacklist ("hiddenFields") instead of whitelist? -LG
-            //TODO Maybe omit more fields depending on login/ownership/admin status? -LG
+            // May omit more fields under circumstances in extendPreJSON -LG
             $fields = self::$publicFields;
         }
 

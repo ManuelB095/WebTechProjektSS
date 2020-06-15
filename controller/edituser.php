@@ -64,6 +64,4 @@ if( $username == $_SESSION['username'] )
     $user->LogIn();
 }
 
-//TODO error handling
-
 echo "true";

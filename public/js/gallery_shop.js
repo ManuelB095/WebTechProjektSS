@@ -266,7 +266,7 @@ class GalleryProductView
     {
         $('#dialog_productdetails').attr('productid', this._model.pid);
         $('#productdetails_img').prop('src','ugc/full/'+ this._model.pid +'/'+this._model.pr_filename);
-        $('#productdetails_geodata').html('(171,64/92,08)'); //TODO use actual data
+        $('#productdetails_geodata').html(this._model.pr_exif);
         $('#productdetails_date').html(this._model.pr_upload_date);
         $('#productdetails_owner').html(this._model.pr_owner);
 

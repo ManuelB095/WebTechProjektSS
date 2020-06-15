@@ -15,8 +15,6 @@ $input = json_decode($inputjson);
 // batch-delete in a single request
 if( !empty($input) && gettype($input) == 'array' )
 {
-    $errors = [];
-
     foreach($input as $pos => $raw)
     {
         $tid = filter_var($raw, FILTER_SANITIZE_NUMBER_INT);
@@ -27,12 +25,7 @@ if( !empty($input) && gettype($input) == 'array' )
 
         $db = new DB("DELETE FROM tags WHERE tid = $tid;");
         $db->Execute();
-
-        //TODO error handling, ideally with tag name in message
-        //$errors[$pos] = "$tid: unknown error";
     }
-
-    echo json_encode($errors);
 }
 else
 {

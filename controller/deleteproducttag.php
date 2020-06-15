@@ -15,9 +15,14 @@ $input = [
 
 // From former "UserControl": make sure there are no unknown inputs?
 
+$product = new Product( $input );
+if( $product->pr_owner != $_SESSION['username'] && !$product->IsBoughtBy($_SESSION['username']) )
+{
+    echo "Cannot tag foreign products.";
+    return;
+}
+
 $db = new DB("DELETE FROM producttags WHERE tid = {$input['tid']} AND pid = {$input['pid']};");
 $db->Execute();
-
-//TODO error handling
 
 echo "true";

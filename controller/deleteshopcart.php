@@ -15,8 +15,6 @@ $input = json_decode($inputjson);
 // batch-delete in a single request
 if( !empty($input) && gettype($input) == 'array' )
 {
-    $errors = [];
-
     foreach($input as $pos => $raw)
     {
         $pid = filter_var($raw, FILTER_SANITIZE_NUMBER_INT);
@@ -26,12 +24,7 @@ if( !empty($input) && gettype($input) == 'array' )
             'w_username' => $_SESSION['username'],
             'w_pid' => $pid,
         ]);
-
-        //TODO error handling, ideally with product name in message
-        //$errors[$pos] = "$pid: unknown error";
     }
-
-    echo json_encode($errors);
 }
 // allow single-delete by double-checking the input field
 elseif(!empty( $input = filter_input(INPUT_POST, 'pid', FILTER_SANITIZE_NUMBER_INT) ))

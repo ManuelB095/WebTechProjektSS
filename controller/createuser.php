@@ -26,14 +26,11 @@ $input['password'] = password_hash($input['password'], PASSWORD_DEFAULT); // ret
 
 $keys = array_keys($input);
 $db = new DB("INSERT INTO users(". implode(', ', $keys) .") VALUES(:". implode(', :', $keys) .")");
-$db->Execute($input);
 
-if(empty( $_SESSION['username'] ))
+if( $db->Execute($input) && empty( $_SESSION['username'] ))
 {
     $user = new User( $input['username'] );
     $user->LogIn();
 }
 
 echo "true";
-
-//TODO error handling

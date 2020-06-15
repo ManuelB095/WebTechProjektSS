@@ -21,6 +21,7 @@ return [
     |
     | Set this to false before deploying.
     | Increased overall verbosity.
+    | May reveal sensitive DB meta info.
     |
     */
 

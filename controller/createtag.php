@@ -18,10 +18,13 @@ $keys = array_keys($input);
 $db = new DB("INSERT INTO tags(". implode(', ', $keys) .") VALUES(:". implode(', :', $keys) .")", true);
 $db->Execute($input);
 
-//TODO error handling
-// check if any rows have been affected in lastInsertId?
-
 $tid = $db->lastInsertId();
+if(empty( $tid ))
+{
+    echo "Tag not saved.";
+    return;
+}
+
 $db->commit();
 
 // Respond with the result of this operation

@@ -80,7 +80,12 @@ $input = [
 
 $keys = array_keys($input);
 $db = new DB("INSERT INTO products(". implode(', ', $keys) .") VALUES(:". implode(', :', $keys) .")", true);
-$db->Execute($input);
+
+if( !$db->Execute($input) )
+{
+    echo "\nFile not saved";
+    return;
+}
 
 /*
 |------------------------------------------------
@@ -160,8 +165,6 @@ else // should never happen
 }
 
 $db->commit();
-
-//TODO error handling
 
 // Respond with the result of this operation
 $product = new Product($pid);

@@ -21,16 +21,17 @@ if( !empty($input) && gettype($input) == 'array' )
     foreach($input as $pos => $raw)
     {
         $pids[ $pos ] = filter_var($raw, FILTER_SANITIZE_NUMBER_INT);
-
-        //TODO error handling, ideally with tag name in message
-        //$errors[$pos] = "$tid: unknown error";
     }
 
     $db = new DB("SELECT pr_owner, pr_filename FROM products WHERE pid = :pid");
     foreach($pids as $pos => $pid)
     {
         $results = $db->Fetch([ 'pid'=>$pid ]);
-        if( $results[0]['pr_owner'] != $_SESSION['username'] )
+        if(empty( $results )) // db error most likely
+        {
+            unset( $pids[ $pos ] );
+        }
+        elseif( $results[0]['pr_owner'] != $_SESSION['username'] )
         {
             $errors[ $pos ] = "#$pid: File not owned.";
             unset( $pids[ $pos ] );

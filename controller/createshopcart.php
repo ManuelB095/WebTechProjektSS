@@ -21,14 +21,23 @@ if( !empty($input) && gettype($input) == 'array' )
     {
         $pid = filter_var($raw, FILTER_SANITIZE_NUMBER_INT);
 
+        $product = new Product( $input );
+        if( $product->pr_owner == $_SESSION['username'] )
+        {
+            $errors[$pos] = "$pid: Cannot buy own product.";
+            continue;
+        }
+        if( $product->IsBoughtBy($_SESSION['username']) )
+        {
+            $errors[$pos] = "$pid: Product already bought.";
+            continue;
+        }
+
         $db = new DB("INSERT INTO shoppingcart( w_username, w_pid ) VALUES( :w_username, :w_pid )");
         $db->Execute([
             'w_username' => $_SESSION['username'],
             'w_pid' => $pid,
         ]);
-
-        //TODO error handling, ideally with product name in message
-        //$errors[$pos] = "$pid: unknown error";
     }
 
     echo json_encode($errors);
@@ -36,6 +45,18 @@ if( !empty($input) && gettype($input) == 'array' )
 // allow single-delete by double-checking the input field
 elseif(!empty( $input = filter_input(INPUT_POST, 'pid', FILTER_SANITIZE_NUMBER_INT) ))
 {
+    $product = new Product( $input );
+    if( $product->pr_owner == $_SESSION['username'] )
+    {
+        echo "Cannot buy own product.";
+        return;
+    }
+    if( $product->IsBoughtBy($_SESSION['username']) )
+    {
+        echo "Product already bought.";
+        return;
+    }
+
     $db = new DB("INSERT INTO shoppingcart( w_username, w_pid ) VALUES( :w_username, :w_pid )");
     $db->Execute([
         'w_username' => $_SESSION['username'],

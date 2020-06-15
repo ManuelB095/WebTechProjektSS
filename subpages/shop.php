@@ -63,7 +63,7 @@ if(!empty( $_SESSION['username'] ))
     <div id="productdetails_taglist">
         <!-- populated by JS -->
     </div>
-    <p>Geodaten: € <span id="productdetails_geodata"></span></p>
+    <p>Geodaten: <span id="productdetails_geodata"></span></p>
     <p>am: <span id="productdetails_date"></span></p>
     <p>von: <span id="productdetails_owner"></span></p>
     <div>

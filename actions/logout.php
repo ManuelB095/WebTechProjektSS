@@ -1,6 +1,6 @@
 <?php
 
-//TODO just dump the session?
+// just dump the session? It's that easy?
 session_destroy();
 
 echo "true";

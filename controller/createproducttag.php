@@ -15,10 +15,15 @@ $input = [
 
 // From former "UserControl": make sure there are no unknown inputs?
 
+$product = new Product( $input );
+if( $product->pr_owner != $_SESSION['username'] && !$product->IsBoughtBy($_SESSION['username']) )
+{
+    echo "Cannot tag foreign products.";
+    return;
+}
+
 $keys = array_keys($input);
 $db = new DB("INSERT INTO producttags(". implode(', ', $keys) .") VALUES(:". implode(', :', $keys) .")");
 $db->Execute($input);
-
-//TODO error handling
 
 echo "true";

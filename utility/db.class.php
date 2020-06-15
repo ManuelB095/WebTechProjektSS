@@ -49,9 +49,15 @@ class DB
         }
         catch(PDOException $e)
         {
-            //TODO SECURITY: For all error printings in this file, only do it in dev/debug mode! -LG
-            print "ERROR (DB connecting): $connection_string\n";
-            print $e->getMessage();
+            if( Config('app','debug') )
+            {
+                print "ERROR (DB connecting): $connection_string\n";
+                print $e->getMessage();
+            }
+            else
+            {
+                print "Database error (Connection), please try again later or call the system administrator.";
+            }
             return false;
         }
         $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
@@ -71,8 +77,15 @@ class DB
         }
         catch(PDOException $e)
         {
-            print "ERROR (DB preparing): $sql\n";
-            print $e->getMessage();
+            if( Config('app','debug') )
+            {
+                print "ERROR (DB preparing): $sql\n";
+                print $e->getMessage();
+            }
+            else
+            {
+                print "Database error (Preparing), please call the system administrator.";
+            }
             return false;
         }
     }
@@ -89,8 +102,15 @@ class DB
             }
             catch(PDOException $e)
             {
-                print "ERROR (DB binding): $key => $value\n";
-                print $e->getMessage();
+                if( Config('app','debug') )
+                {
+                    print "ERROR (DB binding): $key => $value\n";
+                    print $e->getMessage();
+                }
+                else
+                {
+                    print "Database error (missing, invalid or too much input). Please call the system administrator.";
+                }
                 return false;
             }
         }
@@ -103,9 +123,16 @@ class DB
         }
         catch(PDOException $e)
         {
-            print "ERROR (DB executing): \n";
-            var_dump($paramset);
-            print $e->getMessage();
+            if( Config('app','debug') )
+            {
+                print "ERROR (DB executing): \n";
+                var_dump($paramset);
+                print $e->getMessage();
+            }
+            else
+            {
+                print "Database error (executing). Please call the system administrator.";
+            }
             return false;
         }
     }

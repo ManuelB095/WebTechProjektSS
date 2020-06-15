@@ -30,7 +30,7 @@ class Product extends Model
 
     protected function IsBoughtBy($username)
     {
-        if(empty( $username )) { return false; }
+        if(empty( $username ) || !$this->exists) { return false; }
 
         $db = new DB('SELECT COUNT(*) FROM userboughtproduct WHERE b_username = :username AND b_pid = :pid');
         $count = $db->Fetch([
@@ -51,7 +51,13 @@ class Product extends Model
             { $obj['access'] = 1; }
         else
             { $obj['access'] = 0; }
-        
+
+        if( $obj['access'] == 0 && empty($_SESSION['is_admin']) )
+        {
+            // If the user has no right to this file, don't give out classified information.
+            unset( $obj['pr_filename'] );
+        }
+
         $db = new DB('SELECT tid FROM producttags WHERE pid = :pid');
         $results = $db->Fetch([
             'pid' => $this->pid,
