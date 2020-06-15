@@ -31,7 +31,7 @@ class Product extends Model
     protected function IsBoughtBy($username)
     {
         if(empty( $username ) || !$this->exists) { return false; }
-
+echo "$username<br>\n";
         $db = new DB('SELECT COUNT(*) FROM userboughtproduct WHERE b_username = :username AND b_pid = :pid');
         $count = $db->Fetch([
             'username' => $username,

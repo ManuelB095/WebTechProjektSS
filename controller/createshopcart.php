@@ -21,7 +21,7 @@ if( !empty($input) && gettype($input) == 'array' )
     {
         $pid = filter_var($raw, FILTER_SANITIZE_NUMBER_INT);
 
-        $product = new Product( $input );
+        $product = new Product( $pid );
         if( $product->pr_owner == $_SESSION['username'] )
         {
             $errors[$pos] = "$pid: Cannot buy own product.";
