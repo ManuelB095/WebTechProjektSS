@@ -135,6 +135,8 @@ class DB
             }
             return false;
         }
+
+        return true;
     }
 
     public function Fetch($paramset = [])
