@@ -22,6 +22,18 @@ if( $product->pr_owner != $_SESSION['username'] && !$product->IsBoughtBy($_SESSI
     return;
 }
 
+$db = new DB('SELECT COUNT(*) FROM producttags WHERE pid = :pid AND tid = :tid');
+$results = $db->Fetch([
+    'pid' => $input['pid'],
+    'tid' => $input['tid'],
+]);
+if(!empty( $results[0]['COUNT(*)'] ))
+{
+    echo "Already tagged.";
+    return;
+}
+
+
 $keys = array_keys($input);
 $db = new DB("INSERT INTO producttags(". implode(', ', $keys) .") VALUES(:". implode(', :', $keys) .")");
 $db->Execute($input);
