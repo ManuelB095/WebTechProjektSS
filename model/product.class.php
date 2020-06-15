@@ -28,7 +28,7 @@ class Product extends Model
     |------------------------------------------------
     */
 
-    protected function IsBoughtBy($username)
+    public function IsBoughtBy($username)
     {
         if(empty( $username ) || !$this->exists) { return false; }
 
